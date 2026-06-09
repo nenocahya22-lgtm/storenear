@@ -11,8 +11,8 @@ import firebaseConfig from '../firebase-applet-config.json';
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore with Database ID (Critical constraint)
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+// Initialize Firestore (default database)
+export const db = getFirestore(app);
 
 // Initialize Auth — gunakan app yang sama dengan Firestore
 export const auth = getAuth(app);
@@ -68,7 +68,8 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   throw new Error(JSON.stringify(errInfo));
 }
 
-// Test Connection (Critical constraint)
+// Test Connection
+testConnection();
 async function testConnection() {
   try {
     await getDocFromServer(doc(db, 'test-connection-doc', 'connection'));
@@ -78,4 +79,3 @@ async function testConnection() {
     }
   }
 }
-testConnection();
