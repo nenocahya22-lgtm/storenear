@@ -1,0 +1,452 @@
+/* ============================================================
+   NEAR BAKERY & CO. — Design System (Starbucks-Inspired)
+   Warm cream canvas | 4-tier green system | Full-pill buttons
+   Inter typeface | Tight -0.01em tracking | scale(0.95) press
+   ============================================================ */
+
+@import "tailwindcss";
+
+/* ─── FONT IMPORTS ─── */
+/* SoDoSans is proprietary to Starbucks — we use Inter as substitute */
+/* Lander Tall substitute: Lora (serif) for Rewards editorial moments */
+/* Kalam script for decorative "cup name" touches */
+
+/* ─── DESIGN TOKENS (CSS Custom Properties) ─── */
+:root {
+  /* === GREEN TIER SYSTEM === */
+  --brand-green: #006241;
+  --green-accent: #00754A;
+  --house-green: #1E3932;
+  --green-uplift: #2b5148;
+  --green-light: #d4e9e2;
+
+  /* === SURFACE & CANVAS === */
+  --canvas-warm: #f2f0eb;
+  --canvas-ceramic: #edebe9;
+  --surface-white: #ffffff;
+  --neutral-cool: #f9f9f9;
+  --gold: #cba258;
+  --gold-light: #dfc49d;
+  --gold-lightest: #faf6ee;
+
+  /* === TEXT COLORS === */
+  --text-black: rgba(0, 0, 0, 0.87);
+  --text-black-soft: rgba(0, 0, 0, 0.58);
+  --text-white: rgba(255, 255, 255, 1);
+  --text-white-soft: rgba(255, 255, 255, 0.70);
+  --rewards-green: #33433d;
+
+  /* === SEMANTIC === */
+  --red: #c82014;
+  --yellow: #fbbc05;
+  --green-light-tint: hsla(160, 32%, 87%, 0.33);
+  --red-tint: hsla(4, 82%, 43%, 0.05);
+
+  /* === TYPOGRAPHY === */
+  --font-primary: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: "Lora", "Iowan Old Style", Georgia, serif;
+  --font-script: "Kalam", "Comic Sans MS", cursive;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --tracking-tight: -0.01em;
+  --tracking-loose: 0.1em;
+  --tracking-looser: 0.15em;
+
+  /* === BUTTON TOKENS === */
+  --button-radius: 50px;
+  --button-active-scale: 0.95;
+  --button-transition: all 0.2s ease;
+
+  /* === CARD TOKENS === */
+  --card-radius: 12px;
+  --card-shadow: 0px 0px 0.5px 0px rgba(0,0,0,0.14), 0px 1px 1px 0px rgba(0,0,0,0.24);
+
+  /* === ELEVATION === */
+  --nav-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 2px 2px rgba(0,0,0,0.06), 0 0 2px rgba(0,0,0,0.07);
+  --frap-shadow-base: 0 0 6px rgba(0,0,0,0.24);
+  --frap-shadow-ambient: 0 8px 12px rgba(0,0,0,0.14);
+
+  /* === SPACING === */
+  --space-1: 0.4rem;
+  --space-2: 0.8rem;
+  --space-3: 1.6rem;
+  --space-4: 2.4rem;
+  --space-5: 3.2rem;
+  --space-6: 4rem;
+  --space-7: 4.8rem;
+  --space-8: 5.6rem;
+  --space-9: 6.4rem;
+
+  /* === BORDER RADIUS === */
+  --radius-card: 12px;
+  --radius-pill: 50px;
+  --radius-circle: 50%;
+}
+
+/* ─── GLOBAL RESET & BASE ─── */
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  line-height: 1.5;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-black);
+  background-color: var(--canvas-warm);
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── TYPOGRAPHY UTILITIES ─── */
+.text-display {
+  font-size: 5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-jumbo {
+  font-size: 3.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-hero-large {
+  font-size: 2.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 3.6rem;
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-h2 {
+  font-size: 2.4rem;
+  font-weight: 400;
+  line-height: 3.6rem;
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-body-large {
+  font-size: 1.9rem;
+  font-weight: 400;
+  line-height: 3.325rem;
+  letter-spacing: var(--tracking-tight);
+}
+
+.text-body {
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.text-small {
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.text-micro {
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+/* Serif text for Rewards/editorial moments */
+.text-serif {
+  font-family: var(--font-serif);
+}
+
+.text-script {
+  font-family: var(--font-script);
+}
+
+/* ─── BUTTON SYSTEM ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  border-radius: var(--button-radius);
+  font-family: var(--font-primary);
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  cursor: pointer;
+  border: none;
+  transition: var(--button-transition);
+  text-decoration: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(var(--button-active-scale));
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Primary filled — Green Accent */
+.btn-primary {
+  background-color: var(--green-accent);
+  color: var(--text-white);
+  border: 1px solid var(--green-accent);
+  padding: 7px 16px;
+  font-size: 1.6rem;
+}
+
+.btn-primary:hover {
+  background-color: #006a41;
+  border-color: #006a41;
+}
+
+/* Outlined — Green Accent border */
+.btn-outline {
+  background-color: transparent;
+  color: var(--green-accent);
+  border: 1px solid var(--green-accent);
+  padding: 7px 16px;
+  font-size: 1.6rem;
+}
+
+.btn-outline:hover {
+  background-color: rgba(0, 117, 74, 0.06);
+}
+
+/* Black filled — high-contrast */
+.btn-black {
+  background-color: #000000;
+  color: var(--text-white);
+  border: 1px solid #000000;
+  padding: 7px 16px;
+  font-size: 1.4rem;
+}
+
+.btn-black:hover {
+  background-color: #333333;
+}
+
+/* Dark outlined */
+.btn-outline-dark {
+  background-color: transparent;
+  color: var(--text-black);
+  border: 1px solid var(--text-black);
+  padding: 7px 16px;
+  font-size: 1.4rem;
+}
+
+.btn-outline-dark:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* White filled on dark bg (Green-on-Green Inverted) */
+.btn-white {
+  background-color: var(--surface-white);
+  color: var(--green-accent);
+  border: 1px solid var(--surface-white);
+  padding: 7px 16px;
+  font-size: 1.6rem;
+}
+
+.btn-white:hover {
+  background-color: #f0f0f0;
+}
+
+/* Outlined on dark — white border */
+.btn-outline-light {
+  background-color: transparent;
+  color: var(--text-white);
+  border: 1px solid var(--text-white);
+  padding: 7px 16px;
+  font-size: 1.6rem;
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: 4px 12px;
+  font-size: 1.3rem;
+}
+
+/* Large button variant */
+.btn-lg {
+  padding: 14px 32px;
+  font-size: 1.6rem;
+}
+
+/* ─── CARD SYSTEM ─── */
+.card {
+  background-color: var(--surface-white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--card-shadow);
+}
+
+.card-dark {
+  background-color: var(--house-green);
+  border-radius: var(--radius-card);
+  color: var(--text-white);
+}
+
+/* ─── FLOATING FRAP BUTTON (Signature Element) ─── */
+.frap-btn {
+  width: 5.6rem;
+  height: 5.6rem;
+  background-color: var(--green-accent);
+  color: var(--text-white);
+  border-radius: var(--radius-circle);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: fixed;
+  bottom: 2.4rem;
+  right: 2.4rem;
+  z-index: 50;
+  box-shadow: var(--frap-shadow-base), var(--frap-shadow-ambient);
+  transition: var(--button-transition), box-shadow 0.2s ease;
+  touch-action: manipulation;
+}
+
+.frap-btn:active {
+  transform: scale(var(--button-active-scale));
+  box-shadow: var(--frap-shadow-base), 0 8px 12px rgba(0,0,0,0);
+}
+
+.frap-btn:hover {
+  background-color: #006a41;
+  transform: scale(1.05);
+}
+
+.frap-btn:active:hover {
+  transform: scale(var(--button-active-scale));
+}
+
+/* ─── FEATURE BAND (Dark Green Hero Strip) ─── */
+.feature-band {
+  background-color: var(--house-green);
+  color: var(--text-white);
+  width: 100%;
+}
+
+.feature-band h1, .feature-band h2 {
+  color: var(--text-white);
+}
+
+.feature-band p {
+  color: var(--text-white-soft);
+}
+
+/* ─── INPUTS & FORMS ─── */
+.input-field {
+  width: 100%;
+  padding: 12px;
+  font-family: var(--font-primary);
+  font-size: 1.6rem;
+  border: 1px solid #d6dbde;
+  border-radius: 4px;
+  background-color: var(--surface-white);
+  color: var(--text-black);
+  transition: border-color 0.2s ease;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: var(--green-accent);
+}
+
+.input-field::placeholder {
+  color: var(--text-black-soft);
+}
+
+.input-label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-black);
+  letter-spacing: 0.325px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+/* ─── UTILITY ─── */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+.text-balance { text-wrap: balance; }
+
+/* ─── SELECTION COLOR ─── */
+::selection {
+  background-color: var(--green-accent);
+  color: var(--text-white);
+}
+
+/* ─── RESPONSIVE BREAKPOINT HELPERS ─── */
+.container-near {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+}
+
+@media (min-width: 768px) {
+  .container-near {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-near {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
