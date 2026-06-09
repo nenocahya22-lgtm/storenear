@@ -134,28 +134,56 @@ export interface WebStorePromo {
 }
 
 export interface WebStoreConfig {
+  // Store Identity — Navbar
   storeName: string;
+  navbarBrandText: string;
   slogan: string;
   logo: string;
-  aboutText: string;
   contactWhatsApp: string;
   contactEmail: string;
   contactInstagram: string;
   alamat: string;
+  searchPlaceholder: string;
+  storeLocatorText: string;
+  
+  // Hero Banner
+  heroTagline: string;
   heroTitle: string;
-  heroSubtitle: string;
-  heroImage: string;
+  heroDescription: string;
   heroBtnText: string;
-  heroBtnLink: string;
+  heroBadgeText1: string;
+  heroBadgeText2: string;
+  heroBadgeText3: string;
+  heroBgColor: string;
+  
+  // Products
   products: WebStoreProduct[];
-  primaryColor: string;
-  secondaryColor: string;
+  productGridTitle: string;
+  emptyStateTitle: string;
+  emptyStateDescription: string;
+  
+  // Theme Colors — matching Web Store design system
+  colorBrandGreen: string;
+  colorGreenAccent: string;
+  colorHouseGreen: string;
+  colorGold: string;
+  colorCanvasWarm: string;
+  
+  // Promotions
   promos: WebStorePromo[];
+  
+  // Payment Methods
   paymentMethods: PaymentMethod[];
+
+  // Branch
   cabangId: string;
   branchSubdomain: string;
-  footerText: string;
-  facebookUrl: string;
-  twitterUrl: string;
+
+  // Footer
+  footerCopyright: string;
+  footerLinks: string[];
+  checkoutFooterText: string;
+  
+  // Timestamp
   lastUpdated: string;
 }

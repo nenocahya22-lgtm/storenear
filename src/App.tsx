@@ -45,7 +45,8 @@ function AppContent() {
     loginWithGoogle,
     toast,
     triggerToast,
-    setLoginModalOpen
+    setLoginModalOpen,
+    webstoreConfig
   } = useStore();
 
   const isAdmin = currentUser?.email === 'nenocahya22@gmail.com' || currentUser?.email === 'seller@webstore.com';
@@ -113,21 +114,20 @@ function AppContent() {
                 
                 <div className="px-4 md:px-6 py-8 font-sans">
                   {/* Starbucks-Inspired Hero Banner — Warm Cream Canvas */}
-                  <div className="feature-band rounded-[var(--radius-card)] p-8 md:p-12 mb-8 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 shadow-sm" style={{backgroundColor: 'var(--house-green)'}}>
+                  <div className="feature-band rounded-[var(--radius-card)] p-8 md:p-12 mb-8 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8 shadow-sm" style={{backgroundColor: webstoreConfig?.heroBgColor || 'var(--house-green)'}}>
                     {/* Subtle pattern overlay */}
                     <div className="absolute right-0 top-0 bottom-0 w-48 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.04] pointer-events-none" />
                     
                     <div className="max-w-2xl relative z-10 space-y-4 text-left">
                       <div className="flex items-center gap-2">
-                        <Star size={12} className="text-[#cba258]" fill="#cba258" />
-                        <span className="text-[#cba258] font-semibold text-[1.2rem] tracking-[var(--tracking-looser)] uppercase">Artisan Bakery Premium</span>
+                        <Star size={12} className="text-[var(--gold)]" fill="var(--gold)" />
+                        <span className="text-[var(--gold)] font-semibold text-[1.2rem] tracking-[var(--tracking-looser)] uppercase">{webstoreConfig?.heroTagline || 'Artisan Bakery Premium'}</span>
                       </div>
                       <h1 className="text-[2.8rem] md:text-[3.6rem] font-bold leading-tight text-white tracking-[var(--tracking-tight)]">
-                        Roti & Pastry Hangat<br />
-                        Dipanggang Segar <span className="italic font-serif text-[#cba258]">Setiap Hari</span>
+                        {webstoreConfig?.heroTitle || 'Roti & Pastry Hangat, Dipanggang Segar Setiap Hari'}
                       </h1>
                       <p className="text-[1.6rem] md:text-[1.9rem] text-white/70 leading-relaxed max-w-lg font-normal" style={{color: 'rgba(255,255,255,0.70)'}}>
-                        Nikmati keaslian cita rasa Sourdough alami, croissant mentega renyah, dan aneka kue premium yang dibuat dengan sepenuh hati oleh baker berpengalaman.
+                        {webstoreConfig?.heroDescription || 'Nikmati keaslian cita rasa Sourdough alami, croissant mentega renyah, dan aneka kue premium yang dibuat dengan sepenuh hati oleh baker berpengalaman.'}
                       </p>
                       
                       {!currentUser ? (
@@ -136,7 +136,7 @@ function AppContent() {
                             onClick={() => setLoginModalOpen(true)}
                             className="btn btn-white text-[1.4rem] px-6 py-3"
                           >
-                            <span>Daftar & Pesan Sekarang</span>
+                            <span>{webstoreConfig?.heroBtnText || 'Daftar & Pesan Sekarang'}</span>
                             <ArrowRight size={16} />
                           </button>
                         </div>
@@ -149,11 +149,11 @@ function AppContent() {
                     </div>
 
                     {/* Right art: Premium Badge */}
-                    <div className="hidden lg:flex flex-col items-center justify-center p-5 border-2 border-[#cba258]/50 rounded-full aspect-square w-32 h-32 bg-white/10 text-center relative shrink-0 shadow-lg backdrop-blur-sm">
+                    <div className="hidden lg:flex flex-col items-center justify-center p-5 border-2 border-[var(--gold)]/50 rounded-full aspect-square w-32 h-32 bg-white/10 text-center relative shrink-0 shadow-lg backdrop-blur-sm">
                       <div className="flex flex-col items-center justify-center">
-                        <span className="text-[0.9rem] tracking-[var(--tracking-looser)] text-[#cba258] uppercase font-bold">100% ALAMI</span>
-                        <span className="font-serif italic text-[1.6rem] text-white my-0.5">Ragi Alami</span>
-                        <span className="text-[0.8rem] text-white/60 font-semibold">TANPA PENGAWET</span>
+                        <span className="text-[0.9rem] tracking-[var(--tracking-looser)] text-[var(--gold)] uppercase font-bold">{webstoreConfig?.heroBadgeText1 || '100% ALAMI'}</span>
+                        <span className="font-serif italic text-[1.6rem] text-white my-0.5">{webstoreConfig?.heroBadgeText2 || 'Ragi Alami'}</span>
+                        <span className="text-[0.8rem] text-white/60 font-semibold">{webstoreConfig?.heroBadgeText3 || 'TANPA PENGAWET'}</span>
                       </div>
                     </div>
                   </div>
@@ -161,7 +161,7 @@ function AppContent() {
                   {/* Products Grid list section */}
                   <div className="mb-6 flex items-center justify-between border-b border-stone-100 pb-4">
                     <h3 className="text-[2.4rem] font-semibold text-[var(--text-black)] tracking-[var(--tracking-tight)]">
-                      <span>{activeCategory ? `${activeCategory}` : 'Pilihan Hari Ini'}</span>
+                      <span>{activeCategory ? `${activeCategory}` : (webstoreConfig?.productGridTitle || 'Pilihan Hari Ini')}</span>
                     </h3>
                     <span className="text-[1.3rem] tracking-[var(--tracking-loose)] text-[var(--text-black-soft)] font-medium uppercase">{filteredProducts.length} Sajian</span>
                   </div>
@@ -174,10 +174,10 @@ function AppContent() {
                   ) : filteredProducts.length === 0 ? (
                     <div className="text-center py-20 card max-w-2xl mx-auto p-8">
                       <Croissant className="mx-auto text-gray-200 mb-3" size={48} />
-                      <h4 className="text-h1 font-bold text-[var(--text-black)]">Belum Ada Menu Tersedia</h4>
+                      <h4 className="text-h1 font-bold text-[var(--text-black)]">{webstoreConfig?.emptyStateTitle || 'Belum Ada Menu Tersedia'}</h4>
                       <p className="text-[1.3rem] text-[var(--text-black-soft)] mt-1.5 max-w-sm mx-auto leading-relaxed">
                         {isAdmin ? (
-                          <span>Database Anda saat ini kosong. Masuk ke panel penjual untuk menambahkan produk.</span>
+                          <span>{webstoreConfig?.emptyStateDescription || 'Database Anda saat ini kosong. Masuk ke panel penjual untuk menambahkan produk.'}</span>
                         ) : (
                           <span>Artisan Baker kami sedang menyiapkan hidangan segar berkualitas terbaik. Pantau terus halaman kami untuk pembaruan menu!</span>
                         )}
@@ -310,16 +310,15 @@ function AppContent() {
         <div className="container-near">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Croissant size={16} className="text-[#cba258]" />
-              <span className="font-bold text-[1.4rem] text-white tracking-[var(--tracking-tight)]">NEAR BAKERY &amp; CO.</span>
+              <Croissant size={16} className="text-[#cba258]" />                      <span className="font-bold text-[1.4rem] text-white tracking-[var(--tracking-tight)]">{webstoreConfig?.navbarBrandText || 'NEAR BAKERY &amp; CO.'}</span>
             </div>
             <p className="text-[1.2rem]" style={{color: 'rgba(255,255,255,0.70)'}}>
-              © 2026 Near Bakery & Co. — Artisan Bakery Premium
+              {webstoreConfig?.footerCopyright || '© 2026 Near Bakery & Co. — Artisan Bakery Premium'}
             </p>
             <div className="flex items-center gap-4 text-[1.1rem]" style={{color: 'rgba(255,255,255,0.70)'}}>
-              <span>Menu</span>
-              <span>Rewards</span>
-              <span>Gift Cards</span>
+              {(webstoreConfig?.footerLinks || ['Menu', 'Rewards', 'Gift Cards']).map((link, i) => (
+                <span key={i}>{link}</span>
+              ))}
             </div>
           </div>
         </div>

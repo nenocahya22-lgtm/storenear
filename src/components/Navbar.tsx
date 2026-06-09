@@ -26,6 +26,7 @@ export const Navbar: React.FC = () => {
     setLoginModalOpen,
     setActiveCategory,
     storeName,
+    webstoreConfig,
   } = useStore();
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -72,13 +73,20 @@ export const Navbar: React.FC = () => {
               <div className="bg-[var(--brand-green)] text-white p-2.5 rounded-full group-hover:bg-[var(--green-accent)] transition-all flex items-center justify-center shadow-sm">
                 <Croissant size={20} className="stroke-[2]" />
               </div>
-              <div className="text-left">
-                <span className="font-bold text-[1.4rem] tracking-[var(--tracking-tight)] text-[var(--text-black)] block leading-tight group-hover:text-[var(--brand-green)] transition-colors">
-                  NEAR BAKERY
-                </span>
-                <span className="text-[0.9rem] text-[var(--text-black-soft)] tracking-[var(--tracking-tight)] font-medium leading-tight block">
-                  &amp; CO.
-                </span>
+              <div className="text-left">                  {(() => {
+                    const brand = webstoreConfig?.navbarBrandText || 'NEAR BAKERY & CO.';
+                    const parts = brand.split('&');
+                    return (
+                      <>
+                        <span className="font-bold text-[1.4rem] tracking-[var(--tracking-tight)] text-[var(--text-black)] block leading-tight group-hover:text-[var(--brand-green)] transition-colors">
+                          {parts[0]?.trim() || brand}
+                        </span>
+                        <span className="text-[0.9rem] text-[var(--text-black-soft)] tracking-[var(--tracking-tight)] font-medium leading-tight block">
+                          {parts.length > 1 ? `& ${parts.slice(1).join('&').trim()}` : '& CO.'}
+                        </span>
+                      </>
+                    );
+                  })()}
               </div>
             </button>
 
@@ -112,7 +120,7 @@ export const Navbar: React.FC = () => {
             <div className="hidden lg:block relative">
               <input
                 type="text"
-                placeholder="Cari menu artisan..."
+                placeholder={webstoreConfig?.searchPlaceholder || 'Cari menu artisan...'}
                 value={searchQuery}
                 onChange={handleSearchChange}
                 className="w-[200px] pl-3.5 pr-8 py-2 rounded-full bg-[var(--canvas-warm)] border border-transparent text-[var(--text-black)] placeholder-[var(--text-black-soft)] text-[1.3rem] focus:outline-none focus:border-[var(--green-accent)] focus:bg-white transition-all"
@@ -186,7 +194,7 @@ export const Navbar: React.FC = () => {
             {/* Find a store / Location */}
             <button className="hidden md:flex items-center gap-1.5 text-[1.3rem] font-semibold text-[var(--text-black)] hover:text-[var(--brand-green)] transition-colors">
               <MapPin size={16} />
-              <span>Temukan Toko</span>
+              <span>{webstoreConfig?.storeLocatorText || 'Temukan Toko'}</span>
             </button>
 
             {/* Auth buttons (desktop) */}

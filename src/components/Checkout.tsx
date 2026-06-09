@@ -12,7 +12,7 @@ import { formatRupiah } from '../utils';
 import { ShippingAddress, OrderItem, StatusHistoryItem, OrderStatus } from '../types';
 
 export const Checkout: React.FC = () => {
-  const { cart, clearCart, setView, currentUser, triggerToast, paymentMethods, cabangId } = useStore();
+  const { cart, clearCart, setView, currentUser, triggerToast, paymentMethods, cabangId, webstoreConfig } = useStore();
   const [address, setAddress] = useState<ShippingAddress>({
     name: currentUser?.displayName || '', phone: '', address: '', city: '', postalCode: ''
   });
@@ -229,7 +229,7 @@ export const Checkout: React.FC = () => {
           <button type="submit" disabled={isSubmitting} className="btn btn-primary w-full text-[1.4rem] justify-center">
             {isSubmitting ? 'Memproses...' : <><ShieldCheck size={16} /> Kirim Pesanan</>}
           </button>
-          <p className="text-[0.9rem] text-[var(--text-black-soft)] text-center mt-4">Near Bakery & Co. — Kualitas Terjamin</p>
+          <p className="text-[0.9rem] text-[var(--text-black-soft)] text-center mt-4">{webstoreConfig?.checkoutFooterText || 'Near Bakery & Co. — Kualitas Terjamin'}</p>
         </div>
       </form>
     </div>
