@@ -6,7 +6,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   onAuthStateChanged, 
-  signInWithPopup, 
+  signInWithRedirect, 
+  getRedirectResult,
   signOut
 } from 'firebase/auth';
 import { 
@@ -83,20 +84,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, 5000);
   };
 
-  // Google Login helper
+  // Google Login helper — pakai redirect, lebih cocok untuk Vercel/Firebase cross-domain
   const loginWithGoogle = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      triggerToast('Login Berhasil', `Selamat datang kembali, ${result.user.displayName}!`);
-      setLoginModalOpen(false);
+      await signInWithRedirect(auth, googleProvider);
+      // Redirect akan membawa user ke Google, lalu kembali ke halaman ini
     } catch (error: any) {
       console.error('Google Login Error:', error);
-      if (error && (error.code === 'auth/popup-closed-by-user' || error.message?.includes('popup-closed-by-user'))) {
-        triggerToast('Login Tertunda', 'Popup sign-in ditutup/diblokir. Silakan coba buka di tab baru,aktifkan popup, atau pakai Akun Demo kami!');
-        setLoginModalOpen(true);
-      } else {
-        triggerToast('Gagal Login', 'Terjadi kesalahan saat masuk menggunakan akun Google Anda.');
-      }
+      triggerToast('Gagal Login', 'Terjadi kesalahan saat masuk menggunakan akun Google Anda.');
     }
   };
 
@@ -111,6 +106,22 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.error('Logout error:', error);
     }
   };
+
+  // Listen to redirect result setelah Google Login (redirect flow)
+  useEffect(() => {
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result) {
+          triggerToast('Login Berhasil', `Selamat datang kembali, ${result.user.displayName}!`);
+          setLoginModalOpen(false);
+        }
+      })
+      .catch((error: any) => {
+        console.error('Redirect Login Error:', error);
+        // Redirect flow — tidak ada popup, jadi cukup tampilkan error
+        triggerToast('Gagal Login', 'Terjadi kesalahan saat login Google. Coba lagi nanti.');
+      });
+  }, []);
 
   // Listen to Auth State Changes
   useEffect(() => {
