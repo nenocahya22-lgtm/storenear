@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../context/StoreContext';
-import { db, handleFirestoreError, OperationType } from '../firebase';
+import { db } from '../firebase';
 import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, arrayUnion, serverTimestamp, setDoc } from 'firebase/firestore';
 import { formatRupiah, getStatusBadgeStyle } from '../utils';
 import { Order, OrderStatus } from '../types';
@@ -35,7 +35,10 @@ export const OrderTracking: React.FC = () => {
       });
       setOrders(list);
       setIsLoading(false);
-    }, (error) => { handleFirestoreError(error, OperationType.LIST, 'orders'); });
+    }, (error) => {
+      console.error('Error loading orders:', error);
+      setIsLoading(false);
+    });
     return () => unsubscribe();
   }, [currentUser]);
 

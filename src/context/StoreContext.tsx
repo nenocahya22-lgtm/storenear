@@ -93,7 +93,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch (error: any) {
       console.error('Google Login Error:', error);
       if (error.code === 'auth/popup-closed-by-user') {
-        // User menutup popup — tidak perlu notifikasi
         return;
       }
       triggerToast('Gagal Login', 'Terjadi kesalahan saat masuk menggunakan akun Google Anda. Coba buka di tab baru jika popup terblokir.');
@@ -119,7 +118,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       if (user) {
-        // If logged in user email matches admin, upgrade to merchant role automatically
         if (user.email === 'nenocahya22@gmail.com' || user.email === 'seller@webstore.com') {
           setUserRole('penjual');
           setView('seller');
