@@ -4,11 +4,11 @@
  */
 
 import React from 'react';
-import { X, LogIn, UserCheck, Store, ShieldAlert, Check, HelpCircle, Info, Croissant } from 'lucide-react';
+import { X, ShieldAlert, Info, Croissant } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 
 export const LoginModal: React.FC = () => {
-  const { isLoginModalOpen, setLoginModalOpen, loginWithGoogle, loginDemoUser, isLoading } = useStore();
+  const { isLoginModalOpen, setLoginModalOpen, loginWithGoogle, isLoading } = useStore();
 
   if (!isLoginModalOpen) return null;
 
@@ -35,11 +35,11 @@ export const LoginModal: React.FC = () => {
         </div>
 
         <div className="p-6 overflow-y-auto space-y-6">
-          {/* Google Login */}
+          {/* Google Login — Satu-satunya metode masuk */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="h-4 w-1 bg-[var(--brand-green)] rounded-full" />
-              <h4 className="text-[1.1rem] font-bold text-[var(--text-black-soft)] tracking-[var(--tracking-looser)] uppercase">Metode Utama</h4>
+              <h4 className="text-[1.1rem] font-bold text-[var(--text-black-soft)] tracking-[var(--tracking-looser)] uppercase">Masuk dengan Google</h4>
             </div>
             <button onClick={loginWithGoogle} disabled={isLoading}
               className="w-full flex items-center justify-center gap-3 bg-white hover:bg-[var(--canvas-warm)] text-[var(--text-black)] border-2 border-gray-200 py-3 px-4 rounded-[var(--button-radius)] text-[1.4rem] font-semibold transition-colors cursor-pointer shadow-sm">
@@ -53,6 +53,9 @@ export const LoginModal: React.FC = () => {
               </svg>
               <span>Masuk dengan Google</span>
             </button>
+            <p className="text-[1rem] text-[var(--text-black-soft)] pl-1 leading-snug">
+              Menggunakan autentikasi Google Firebase yang aman.
+            </p>
           </div>
 
           {/* Notice */}
@@ -61,38 +64,8 @@ export const LoginModal: React.FC = () => {
             <div>
               <h5 className="text-[1.1rem] font-bold text-[var(--text-black)] uppercase">Pop-up terblokir?</h5>
               <p className="text-[1rem] text-[var(--text-black-soft)] leading-relaxed">
-                Jika pop-up tertutup, izinkan pop-up browser atau gunakan <strong>Akun Demo</strong> di bawah.
+                Jika pop-up tertutup, izinkan pop-up browser untuk domain ini atau buka di tab baru.
               </p>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-100 relative my-2">
-            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[1rem] font-bold text-[var(--text-black-soft)] tracking-[var(--tracking-looser)] uppercase">ATAU</span>
-          </div>
-
-          {/* Demo Accounts */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="h-4 w-1 bg-[var(--gold)] rounded-full" />
-              <h4 className="text-[1.1rem] font-bold text-[var(--text-black-soft)] tracking-[var(--tracking-looser)] uppercase">Akses Demo</h4>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => { loginDemoUser('buyer'); setLoginModalOpen(false); }} disabled={isLoading}
-                className="flex flex-col items-center p-4 bg-[var(--canvas-warm)] hover:bg-[var(--green-light)] border border-gray-200 hover:border-[var(--green-accent)] rounded-[var(--radius-card)] text-center group transition-all cursor-pointer">
-                <div className="bg-[var(--green-light)] text-[var(--brand-green)] p-2.5 rounded-full mb-2 group-hover:scale-105 transition-all">
-                  <UserCheck size={16} />
-                </div>
-                <span className="font-bold text-[var(--text-black)] text-[1.2rem]">Pembeli</span>
-                <span className="text-[0.9rem] text-[var(--text-black-soft)] mt-1">Coba beli & chat</span>
-              </button>
-              <button onClick={() => { loginDemoUser('seller'); setLoginModalOpen(false); }} disabled={isLoading}
-                className="flex flex-col items-center p-4 bg-[var(--canvas-warm)] hover:bg-[var(--gold-lightest)] border border-gray-200 hover:border-[var(--gold)] rounded-[var(--radius-card)] text-center group transition-all cursor-pointer">
-                <div className="bg-[var(--gold-lightest)] text-[var(--gold)] p-2.5 rounded-full mb-2 group-hover:scale-105 transition-all">
-                  <Store size={16} />
-                </div>
-                <span className="font-bold text-[var(--text-black)] text-[1.2rem]">Admin Toko</span>
-                <span className="text-[0.9rem] text-[var(--text-black-soft)] mt-1">Kelola menu</span>
-              </button>
             </div>
           </div>
         </div>

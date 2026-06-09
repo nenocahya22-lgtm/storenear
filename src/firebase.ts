@@ -14,8 +14,8 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firestore with Database ID (Critical constraint)
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
-// Initialize Auth
-export const auth = getAuth();
+// Initialize Auth — gunakan app yang sama dengan Firestore
+export const auth = getAuth(app);
 
 // Google Auth Provider
 export const googleProvider = new GoogleAuthProvider();

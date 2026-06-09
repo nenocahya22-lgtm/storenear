@@ -7,9 +7,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   onAuthStateChanged, 
   signInWithPopup, 
-  signOut, 
-  signInWithEmailAndPassword,
-  signInAnonymously
+  signOut
 } from 'firebase/auth';
 import { 
   collection, 
@@ -48,7 +46,6 @@ interface StoreContextType {
   unreadNotificationCount: number;
   markNotificationsAsRead: () => void;
   loginWithGoogle: () => Promise<void>;
-  loginDemoUser: (role: 'buyer' | 'seller') => Promise<void>;
   logout: () => Promise<void>;
   triggerToast: (title: string, message: string) => void;
   toast: { title: string; message: string; show: boolean } | null;
@@ -100,43 +97,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       } else {
         triggerToast('Gagal Login', 'Terjadi kesalahan saat masuk menggunakan akun Google Anda.');
       }
-    }
-  };
-
-  // Sandbox demo mode login to jump roles easily
-  const loginDemoUser = async (role: 'buyer' | 'seller') => {
-    try {
-      setIsLoading(true);
-      // We will perform anonymous login for sandbox convenience
-      const result = await signInAnonymously(auth);
-      
-      // Setup demo merchant profile or normal buyer profile
-      if (role === 'seller') {
-        // Create merchant collection record so firestore rules match "isMerchant()"
-        const pathForMerchant = `merchants/${result.user.uid}`;
-        try {
-          await setDoc(doc(db, 'merchants', result.user.uid), {
-            id: result.user.uid,
-            name: 'Demo Penjual Toko',
-            email: 'seller@webstore.com',
-            createdAt: serverTimestamp()
-          });
-        } catch (e) {
-          handleFirestoreError(e, OperationType.WRITE, pathForMerchant);
-        }
-        setUserRole('penjual');
-        setView('seller');
-        triggerToast('Demo Seller Aktif', 'Masuk sebagai Penjual (Akses Admin Lengkap).');
-      } else {
-        setUserRole('pembeli');
-        setView('home');
-        triggerToast('Demo Buyer Aktif', 'Masuk sebagai Pembeli.');
-      }
-    } catch (error) {
-      console.error('Demo Login Error:', error);
-      triggerToast('Gagal Demo Login', 'Gagal memuat akun uji coba.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -348,7 +308,6 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       unreadNotificationCount,
       markNotificationsAsRead,
       loginWithGoogle,
-      loginDemoUser,
       logout,
       triggerToast,
       toast,
