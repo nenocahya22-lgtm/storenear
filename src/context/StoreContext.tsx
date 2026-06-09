@@ -75,6 +75,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // 🔥 Web Store Config — sync from ERP via Firestore
   const [webstoreConfig, setWebstoreConfig] = useState<WebStoreConfig | null>(null);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [detectedCabangId, setDetectedCabangId] = useState<string>('pusat');
 
   // Trigger custom in-app notifications/toasts
   const triggerToast = (title: string, message: string) => {
@@ -210,19 +211,63 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     saveCart([]);
   };
 
+  // 🔥 Deteksi cabangId dari subdomain atau URL params
+  const detectCabangId = async (): Promise<string> => {
+    // Prioritaskan URL param (?cabang=...)
+    const urlParam = new URLSearchParams(window.location.search).get('cabang');
+    if (urlParam) return urlParam;
+
+    // Deteksi subdomain dari hostname
+    // Format: cabang-a.storenear.vercel.app atau cabang-a.nearbakery.com
+    const hostname = window.location.hostname;
+    const parts = hostname.split('.');
+    
+    // Jika ada subdomain (bukan www, bukan domain utama)
+    if (parts.length >= 3) {
+      const subdomain = parts[0];
+      // Skip known prefixes
+      if (subdomain !== 'www' && subdomain !== 'app') {
+        try {
+          // Coba cari di collection cabang_subdomains
+          const subRef = doc(db, 'cabang_subdomains', subdomain);
+          const subSnap = await getDoc(subRef);
+          if (subSnap.exists()) {
+            const data = subSnap.data() as any;
+            return data.cabangId || subdomain;
+          }
+        } catch (e) {
+          console.warn('Subdomain lookup failed, using subdomain as cabangId:', e);
+          return subdomain;
+        }
+      }
+    }
+
+    return 'pusat';
+  };
+
   // 🔥 Listen to WebStore Config from Firestore (synced from ERP)
   useEffect(() => {
-    const cabangId = new URLSearchParams(window.location.search).get('cabang') || 'pusat';
-    const configRef = doc(db, 'webstore_config', cabangId);
-    const unsubscribe = onSnapshot(configRef, (snap) => {
-      if (snap.exists()) {
-        const data = snap.data() as WebStoreConfig;
-        setWebstoreConfig(data);
-      }
-    }, (error) => {
-      console.warn('Failed to load webstore config:', error);
-    });
-    return () => unsubscribe();
+    let unsub: (() => void) | null = null;
+    let cancelled = false;
+
+    detectCabangId().then((id) => {
+      if (cancelled) return;
+      setDetectedCabangId(id); // Sinkron state cabangId
+      const configRef = doc(db, 'webstore_config', id);
+      unsub = onSnapshot(configRef, (snap) => {
+        if (snap.exists()) {
+          const data = snap.data() as WebStoreConfig;
+          setWebstoreConfig(data);
+        }
+      }, (error) => {
+        console.warn('Failed to load webstore config:', error);
+      });
+    }).catch(() => {});
+
+    return () => {
+      cancelled = true;
+      if (unsub) unsub();
+    };
   }, []);
 
   // Derived values from config
@@ -233,7 +278,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     document.title = `${storeName} — Artisan Bakery Premium`;
   }, [storeName]);
-  const cabangId = new URLSearchParams(window.location.search).get('cabang') || 'pusat';
+
+  // Gunakan detectedCabangId dari deteksi subdomain/URL, sinkron dengan webstore_config
+  const cabangId = detectedCabangId;
 
   // Listen to User Notifications in Real-time from Firestore
   useEffect(() => {

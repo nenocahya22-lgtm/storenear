@@ -58,13 +58,13 @@ export const LoginModal: React.FC = () => {
             </p>
           </div>
 
-          {/* Notice */}
+          {/* Notice — Redirect flow, bukan popup */}
           <div className="bg-[var(--gold-lightest)] border border-[var(--gold-light)]/50 rounded-[var(--radius-card)] p-4 flex items-start gap-3">
-            <ShieldAlert size={16} className="text-[var(--gold)] shrink-0 mt-0.5" />
+            <Info size={16} className="text-[var(--gold)] shrink-0 mt-0.5" />
             <div>
-              <h5 className="text-[1.1rem] font-bold text-[var(--text-black)] uppercase">Pop-up terblokir?</h5>
+              <h5 className="text-[1.1rem] font-bold text-[var(--text-black)] uppercase">Proses Login Aman</h5>
               <p className="text-[1rem] text-[var(--text-black-soft)] leading-relaxed">
-                Jika pop-up tertutup, izinkan pop-up browser untuk domain ini atau buka di tab baru.
+                Anda akan diarahkan ke halaman Google untuk login, lalu kembali otomatis. Pastikan tidak memblokir redirect browser.
               </p>
             </div>
           </div>
