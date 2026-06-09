@@ -6,8 +6,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   onAuthStateChanged, 
-  signInWithRedirect, 
-  getRedirectResult,
+  signInWithPopup, 
   signOut
 } from 'firebase/auth';
 import { 
@@ -85,14 +84,19 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, 5000);
   };
 
-  // Google Login helper — pakai redirect, lebih cocok untuk Vercel/Firebase cross-domain
+  // Google Login helper — pakai popup (domain Firebase Hosting sudah authorized)
   const loginWithGoogle = async () => {
     try {
-      await signInWithRedirect(auth, googleProvider);
-      // Redirect akan membawa user ke Google, lalu kembali ke halaman ini
+      await signInWithPopup(auth, googleProvider);
+      triggerToast('Login Berhasil', 'Selamat datang di Near Bakery & Co.!');
+      setLoginModalOpen(false);
     } catch (error: any) {
       console.error('Google Login Error:', error);
-      triggerToast('Gagal Login', 'Terjadi kesalahan saat masuk menggunakan akun Google Anda.');
+      if (error.code === 'auth/popup-closed-by-user') {
+        // User menutup popup — tidak perlu notifikasi
+        return;
+      }
+      triggerToast('Gagal Login', 'Terjadi kesalahan saat masuk menggunakan akun Google Anda. Coba buka di tab baru jika popup terblokir.');
     }
   };
 
@@ -108,21 +112,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  // Listen to redirect result setelah Google Login (redirect flow)
-  useEffect(() => {
-    getRedirectResult(auth)
-      .then((result) => {
-        if (result) {
-          triggerToast('Login Berhasil', `Selamat datang kembali, ${result.user.displayName}!`);
-          setLoginModalOpen(false);
-        }
-      })
-      .catch((error: any) => {
-        console.error('Redirect Login Error:', error);
-        // Redirect flow — tidak ada popup, jadi cukup tampilkan error
-        triggerToast('Gagal Login', 'Terjadi kesalahan saat login Google. Coba lagi nanti.');
-      });
-  }, []);
+  // Popup login handler — hasil langsung dari signInWithPopup, tidak perlu getRedirectResult
 
   // Listen to Auth State Changes
   useEffect(() => {
