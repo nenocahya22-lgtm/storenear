@@ -266,9 +266,23 @@ export const ProductDetail: React.FC = () => {
           {/* Price Display */}
           <div className="bg-[var(--canvas-warm)] rounded-[var(--radius-card)] p-5 mb-5">
             <span className="text-[1rem] text-[var(--text-black-soft)] tracking-[var(--tracking-looser)] uppercase font-bold block mb-1">Harga</span>
-            <span className="text-[2.8rem] font-bold text-[var(--text-black)] tracking-[var(--tracking-tight)]">
-              {formatRupiah(product.price)}
-            </span>
+            {product.discountPercent && product.discountPercent > 0 ? (
+              <div className="flex items-center gap-3">
+                <span className="text-[2.8rem] font-bold text-[var(--red)] tracking-[var(--tracking-tight)]">
+                  {formatRupiah(product.price * (1 - product.discountPercent / 100))}
+                </span>
+                <span className="text-[1.6rem] text-gray-400 line-through">
+                  {formatRupiah(product.price)}
+                </span>
+                <span className="px-2.5 py-1 bg-[var(--red)] text-white text-[1rem] font-bold rounded-full">
+                  -{product.discountPercent}%
+                </span>
+              </div>
+            ) : (
+              <span className="text-[2.8rem] font-bold text-[var(--text-black)] tracking-[var(--tracking-tight)]">
+                {formatRupiah(product.price)}
+              </span>
+            )}
           </div>
 
           {/* Description */}

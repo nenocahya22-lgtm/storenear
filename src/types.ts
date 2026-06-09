@@ -13,6 +13,8 @@ export interface Product {
   category: string;
   rating?: number;
   reviewCount?: number;
+  discountPercent?: number;
+  originalPrice?: number;
   createdAt?: any; // Firestore Timestamp
 }
 
@@ -123,6 +125,7 @@ export interface WebStoreProduct {
   displayImage: string;
   description: string;
   kategori: string;
+  discountPercent?: number; // 0-100, 0 = no discount
 }
 
 export interface WebStorePromo {
@@ -168,6 +171,10 @@ export interface WebStoreConfig {
   colorHouseGreen: string;
   colorGold: string;
   colorCanvasWarm: string;
+  
+  // Categories (managed from ERP, synced to Web Store)
+  categories: string[];
+  categoryIcons: Record<string, string>; // category name → icon name
   
   // Promotions
   promos: WebStorePromo[];

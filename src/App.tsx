@@ -71,6 +71,8 @@ function AppContent() {
           category: data.category,
           rating: data.rating,
           reviewCount: data.reviewCount,
+          discountPercent: data.discountPercent,
+          originalPrice: data.originalPrice,
           createdAt: data.createdAt
         });
       });
@@ -157,6 +159,31 @@ function AppContent() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Promo Banner Section (dari webstoreConfig) */}
+                  {webstoreConfig?.promos && webstoreConfig.promos.filter(p => p.active).length > 0 && (
+                    <div className="mb-8 overflow-hidden rounded-[var(--radius-card)]">
+                      <div className="flex gap-4 overflow-x-auto pb-2 snap-x scrollbar-none">
+                        {webstoreConfig.promos.filter(p => p.active).map((promo) => (
+                          <div key={promo.id} className="min-w-[280px] md:min-w-[320px] snap-start rounded-[var(--radius-card)] overflow-hidden relative group cursor-pointer bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                            {promo.image ? (
+                              <img src={promo.image} alt={promo.title} className="w-full h-28 object-cover" />
+                            ) : (
+                              <div className="w-full h-28 bg-gradient-to-r from-[var(--brand-green)] to-[var(--house-green)] flex items-center justify-center">
+                                <span className="text-3xl">🎉</span>
+                              </div>
+                            )}
+                            <div className="p-3">
+                              <h4 className="text-[1.2rem] font-bold text-[var(--text-black)]">{promo.title}</h4>
+                              {promo.description && (
+                                <p className="text-[1rem] text-[var(--text-black-soft)] mt-0.5 line-clamp-2">{promo.description}</p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Products Grid list section */}
                   <div className="mb-6 flex items-center justify-between border-b border-stone-100 pb-4">

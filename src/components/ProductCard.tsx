@@ -21,6 +21,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setView('product-detail');
   };
 
+  const discountedPrice = product.discountPercent && product.discountPercent > 0
+    ? product.price * (1 - product.discountPercent / 100)
+    : null;
+
   return (
     <div 
       className="card overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col cursor-pointer relative group bg-white"
@@ -31,6 +35,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <span className="absolute top-3 left-3 z-10 bg-white/95 text-[var(--brand-green)] text-[0.9rem] tracking-[var(--tracking-looser)] font-bold uppercase px-2.5 py-1 rounded-[var(--button-radius)] shadow-xs border border-[var(--green-light)]">
         {product.category ? product.category.split(' ')[0] : 'Menu'}
       </span>
+
+      {/* Discount Badge */}
+      {product.discountPercent && product.discountPercent > 0 && (
+        <span className="absolute top-3 right-3 z-10 bg-[var(--red)] text-white text-[0.9rem] font-bold px-2 py-0.5 rounded-full shadow-md animate-pulse">
+          -{product.discountPercent}%
+        </span>
+      )}
 
       {/* Image Container with hover zoom */}
       <div className="w-full aspect-square overflow-hidden bg-[var(--canvas-warm)] relative">
@@ -69,9 +80,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Price + Add to cart */}
         <div className="mt-auto pt-3 flex items-center justify-between border-t border-gray-100">
           <div className="text-left">
-            <span className="text-[var(--text-black)] font-bold text-[1.6rem] md:text-[1.8rem] block tracking-[var(--tracking-tight)]">
-              {formatRupiah(product.price)}
-            </span>
+            {discountedPrice ? (
+              <>
+                <span className="text-[var(--text-black)] font-bold text-[1.6rem] md:text-[1.8rem] block tracking-[var(--tracking-tight)]">
+                  {formatRupiah(discountedPrice)}
+                </span>
+                <span className="text-[1rem] text-gray-400 line-through block">
+                  {formatRupiah(product.price)}
+                </span>
+              </>
+            ) : (
+              <span className="text-[var(--text-black)] font-bold text-[1.6rem] md:text-[1.8rem] block tracking-[var(--tracking-tight)]">
+                {formatRupiah(product.price)}
+              </span>
+            )}
             <span className="text-[1rem] text-[var(--text-black-soft)]">
               Stok: <span className={product.stock > 0 ? 'text-[var(--green-accent)] font-semibold' : 'text-[var(--red)] font-semibold'}>{product.stock > 0 ? `${product.stock}` : 'Habis'}</span>
             </span>

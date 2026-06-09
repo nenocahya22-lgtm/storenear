@@ -4,20 +4,29 @@
  */
 
 import React from 'react';
-import { CATEGORIES } from '../data/presets';
 import { useStore } from '../context/StoreContext';
-import { Wheat, Croissant, Cake, Cookie, Coffee, Sparkles } from 'lucide-react';
+import { Wheat, Croissant, Cake, Cookie, Coffee, Package, Sparkles } from 'lucide-react';
 
-const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  'Roti & Sourdough': <Wheat size={14} />,
-  'Viennoiserie & Croissant': <Croissant size={14} />,
-  'Kue & Tart': <Cake size={14} />,
-  'Kue Kering & Cookies': <Cookie size={14} />,
-  'Minuman Kopi & Teh': <Coffee size={14} />
+const ICON_MAP: Record<string, React.ReactNode> = {
+  wheat: <Wheat size={14} />,
+  croissant: <Croissant size={14} />,
+  cake: <Cake size={14} />,
+  cookie: <Cookie size={14} />,
+  coffee: <Coffee size={14} />,
+  package: <Package size={14} />,
 };
 
 export const CategorySlider: React.FC = () => {
-  const { activeCategory, setActiveCategory } = useStore();
+  const { activeCategory, setActiveCategory, webstoreConfig } = useStore();
+
+  const categories = webstoreConfig?.categories?.length
+    ? webstoreConfig.categories
+    : ['Roti & Sourdough', 'Viennoiserie & Croissant', 'Kue & Tart', 'Kue Kering & Cookies', 'Minuman Kopi & Teh'];
+
+  const getIcon = (cat: string) => {
+    const iconName = webstoreConfig?.categoryIcons?.[cat];
+    return iconName ? ICON_MAP[iconName] : null;
+  };
 
   return (
     <div className="w-full bg-[var(--canvas-ceramic)] border-b border-gray-200/50 py-6">
@@ -30,7 +39,7 @@ export const CategorySlider: React.FC = () => {
           </span>
         </div>
         
-        {/* Pill-style category buttons — Starbucks full-pill radius */}
+        {/* Pill-style category buttons */}
         <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none snap-x">
           <button
             key="all-categories"
@@ -44,9 +53,9 @@ export const CategorySlider: React.FC = () => {
             <span>Semua</span>
           </button>
 
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const isSelected = activeCategory === cat;
-            const icon = CATEGORY_ICONS[cat];
+            const icon = getIcon(cat);
             
             return (
               <button

@@ -72,6 +72,25 @@ export const Checkout: React.FC = () => {
           body: `Pesanan ${orderId} telah diajukan ke dapur.`, read: false, orderId: orderId, createdAt: serverTimestamp()
         });
       });
+      // Kirim notifikasi ke ERP via erp_notifications collection
+      try {
+        const erpNotifRef = doc(collection(db, 'erp_notifications'));
+        await setDoc(erpNotifRef, {
+          id: erpNotifRef.id,
+          type: 'new_order',
+          title: '🛵 Pesanan Baru!',
+          body: `${currentUser.displayName || 'Pembeli'} memesan ${totalQty} item — ${formatRupiah(subtotal)}`,
+          orderId: orderId,
+          cabangId: cabangId,
+          cabangNama: cabangId === 'pusat' ? 'Pusat' : cabangId,
+          amount: subtotal,
+          read: false,
+          createdAt: serverTimestamp(),
+        });
+      } catch (e) {
+        console.error('Gagal kirim notifikasi ERP:', e);
+      }
+
       clearCart();
       setPlacedOrderId(orderId);
       setOrderSuccess(true);
