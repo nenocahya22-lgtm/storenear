@@ -1,0 +1,58 @@
+# 🔥 Auto-deploy Web Store ke Firebase Hosting
+# Setiap push ke branch main → otomatis build & deploy
+# Sama seperti Vercel auto-deploy!
+#
+# 📌 SEBELUM DIGUNAKAN:
+# 1. Buka GitHub repo → Settings → Secrets and variables → Actions
+# 2. Tambah secret: FIREBASE_SERVICE_ACCOUNT_NEAR_BAKERY_STORE
+#    Isinya: JSON private key dari Firebase Console
+#    Cara dapatkan:
+#    - Buka https://console.firebase.google.com → Project: near-bakery-store
+#    - Project Settings → Service accounts → Generate new private key
+#    - Copy seluruh isi JSON ke secret di GitHub
+# 3. Jalankan workflow manual sekali untuk tes, atau push ke main
+
+name: 🔥 Deploy Web Store to Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+  workflow_dispatch:
+
+jobs:
+  build_and_deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      id-token: write
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🏗️ Build Project
+        run: npm run build
+        env:
+          CI: true
+
+      - name: 🚀 Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_NEAR_BAKERY_STORE }}
+          channelId: live
+          projectId: near-bakery-store
