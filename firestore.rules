@@ -120,12 +120,20 @@ service cloud.firestore {
     }
 
     // Orders (Pillar 4, 8)
+    // ⚠️ NOTE: `resource.data` tidak bisa digunakan di operasi `list`,
+    // jadi kita gunakan approach lain: merchant bisa list semua, user biasa
+    // hanya bisa membaca order yang mereka buat via get (dengan ID diketahui)
     match /orders/{orderId} {
-      allow list: if isMerchant() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow list: if isMerchant();
       allow get: if isMerchant() || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow create: if isSignedIn() && incoming().userId == request.auth.uid && isValidOrder(incoming());
       allow update: if isMerchant() || (isSignedIn() && existing().userId == request.auth.uid);
       allow delete: if isMerchant();
+    }
+    
+    // User orders subcollection — setiap user bisa list order mereka sendiri
+    match /user_orders/{userId}/orders/{orderId} {
+      allow read, write: if isSignedIn() && userId == request.auth.uid;
     }
 
     // Chats & Messages (Pillar 5, 8 - Secure Local Cost-free Checks)
