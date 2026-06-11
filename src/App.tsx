@@ -13,7 +13,6 @@ import { Cart } from './components/Cart';
 import { Checkout } from './components/Checkout';
 import { OrderTracking } from './components/OrderTracking';
 import { LiveChat } from './components/LiveChat';
-import { SellerDashboard } from './components/SellerDashboard';
 import { LoginModal } from './components/LoginModal';
 import { db, handleFirestoreError, OperationType } from './firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
@@ -22,7 +21,6 @@ import {
   Home as HomeIcon, 
   ShoppingCart, 
   ClipboardCheck, 
-  Store, 
   MessageCircle, 
   ShoppingBag, 
   HelpCircle, 
@@ -48,8 +46,6 @@ function AppContent() {
     setLoginModalOpen,
     webstoreConfig
   } = useStore();
-
-  const isAdmin = currentUser?.email === 'nenocahya22@gmail.com' || currentUser?.email === 'seller@webstore.com';
 
   const [products, setProducts] = useState<Product[]>([]);
   const [dbLoading, setDbLoading] = useState(true);
@@ -103,11 +99,7 @@ function AppContent() {
       {/* Primary app viewport container */}
       <main className="flex-1 w-full max-w-7xl mx-auto py-1">
         
-        {/* VIEW: SELLER / ADMIN DASHBOARD */}
-        {currentView === 'seller' ? (
-          <SellerDashboard />
-        ) : (
-          /* BUYER PORTAL VIEWS */
+        {/* BUYER PORTAL VIEWS */}
           <div className="animate-fade-in duration-300">
             {currentView === 'home' && (
               <>
@@ -220,25 +212,9 @@ function AppContent() {
                       <Croissant className="mx-auto text-gray-200 mb-3" size={48} />
                       <h4 className="text-h1 font-bold text-[var(--text-black)]">{webstoreConfig?.emptyStateTitle || 'Belum Ada Menu Tersedia'}</h4>
                       <p className="text-[1.3rem] text-[var(--text-black-soft)] mt-1.5 max-w-sm mx-auto leading-relaxed">
-                        {isAdmin ? (
-                          <span>{webstoreConfig?.emptyStateDescription || 'Database Anda saat ini kosong. Masuk ke panel penjual untuk menambahkan produk.'}</span>
-                        ) : (
-                          <span>Artisan Baker kami sedang menyiapkan hidangan segar berkualitas terbaik. Pantau terus halaman kami untuk pembaruan menu!</span>
-                        )}
+                        <span>Artisan Baker kami sedang menyiapkan hidangan segar berkualitas terbaik. Pantau terus halaman kami untuk pembaruan menu!</span>
                       </p>
-                      {isAdmin && (
-                        <div className="mt-5 flex gap-2 justify-center">
-                          <button
-                            onClick={() => {
-                              setUserRole('penjual');
-                              setView('seller');
-                            }}
-                            className="btn btn-primary"
-                          >
-                            Masuk Panel Penjual
-                          </button>
-                        </div>
-                      )}
+
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5 md:gap-6">
@@ -256,7 +232,6 @@ function AppContent() {
             {currentView === 'checkout' && <Checkout />}
             {currentView === 'orders' && <OrderTracking />}
           </div>
-        )}
       </main>
 
       {/* Floating customer-side LiveChat Bubble */}
@@ -314,20 +289,7 @@ function AppContent() {
           <span className="text-[9px] tracking-tight font-medium">Chat</span>
         </button>
 
-        {isAdmin && (
-          <button
-            onClick={() => {
-              setUserRole('penjual');
-              setView('seller');
-            }}
-            className={`flex flex-col items-center gap-0.5 p-1.5 focus:outline-hidden ${
-              currentView === 'seller' ? 'text-amber-800 font-extrabold' : 'text-gray-400'
-            }`}
-          >
-            <Store size={19} />
-            <span className="text-[9px] tracking-tight">Toko Admin</span>
-          </button>
-        )}
+
       </footer>
 
       {/* Global Login Modal Auth portal */}

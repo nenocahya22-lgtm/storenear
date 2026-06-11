@@ -4,14 +4,13 @@
  */
 
 import React, { useState } from 'react';
-import { ShoppingCart, Bell, MessageSquare, LogOut, Search, Store, LogIn, Croissant, User, Menu, X, MapPin } from 'lucide-react';
+import { ShoppingCart, Bell, MessageSquare, LogOut, Search, LogIn, Croissant, User, Menu, X, MapPin } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
 
 export const Navbar: React.FC = () => {
   const {
     currentUser,
     userRole,
-    setUserRole,
     cart,
     setView,
     currentView,
@@ -32,7 +31,6 @@ export const Navbar: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartItemsCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const isAdmin = currentUser?.email === 'nenocahya22@gmail.com' || currentUser?.email === 'seller@webstore.com';
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -200,19 +198,7 @@ export const Navbar: React.FC = () => {
             {/* Auth buttons (desktop) */}
             {currentUser ? (
               <div className="hidden md:flex items-center gap-2">
-                {/* Admin toggle */}
-                {isAdmin && (
-                  <button
-                    onClick={() => {
-                      if (userRole === 'pembeli') { setUserRole('penjual'); setView('seller'); }
-                      else { setUserRole('pembeli'); setView('home'); }
-                    }}
-                    className="btn btn-sm btn-outline text-[1.2rem]"
-                  >
-                    <Store size={12} />
-                    <span>{userRole === 'pembeli' ? 'Admin' : 'Toko'}</span>
-                  </button>
-                )}
+
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-[var(--canvas-warm)] rounded-full text-[1.2rem] font-medium text-[var(--text-black)]">
                   <User size={14} />
                   <span className="max-w-[80px] truncate">{currentUser.displayName || currentUser.email?.split('@')[0]}</span>
@@ -259,9 +245,7 @@ export const Navbar: React.FC = () => {
             <div className="space-y-1">
               <MobileNavItem onClick={() => { setView('home'); setMobileMenuOpen(false); }} label="Menu" />
               <MobileNavItem onClick={() => { if (!currentUser) { setLoginModalOpen(true); return; } setView('orders'); setMobileMenuOpen(false); }} label="Pesanan Saya" />
-              {isAdmin && (
-                <MobileNavItem onClick={() => { setUserRole('penjual'); setView('seller'); setMobileMenuOpen(false); }} label="Dashboard Admin" />
-              )}
+
             </div>
             <div className="mt-8 pt-6 border-t border-gray-100">
               {currentUser ? (

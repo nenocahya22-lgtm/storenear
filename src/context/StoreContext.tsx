@@ -118,12 +118,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       if (user) {
-        if (user.email === 'nenocahya22@gmail.com' || user.email === 'seller@webstore.com') {
-          setUserRole('penjual');
-          setView('seller');
-        } else {
-          setUserRole('pembeli');
-        }
+        setUserRole('pembeli');
       } else {
         setUserRole('pembeli');
       }
