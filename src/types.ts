@@ -172,6 +172,20 @@ export interface WebStoreConfig {
   colorGold: string;
   colorCanvasWarm: string;
   
+  // Badge Premium Circle Styling (from ERP)
+  badgeCircleBgColor?: string;
+  badgeCircleTextColor?: string;
+  badgeCircleBorderColor?: string;
+  badgeCircleBorderWidth?: number;
+  badgeCircleSize?: 'sm' | 'md' | 'lg';
+
+  // Category Circle Styling (from ERP)
+  categoryCircleBgColor?: string;
+  categoryCircleTextColor?: string;
+  categoryCircleBorderColor?: string;
+  categoryCircleSize?: 'sm' | 'md' | 'lg';
+  categoryCircleGap?: 'tight' | 'normal' | 'loose';
+
   // Categories (managed from ERP, synced to Web Store)
   categories: string[];
   categoryIcons: Record<string, string>; // category name → icon name

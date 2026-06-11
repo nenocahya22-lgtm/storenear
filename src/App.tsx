@@ -150,12 +150,29 @@ function AppContent() {
                       )}
                     </div>
 
-                    {/* Right art: Premium Badge */}
-                    <div className="hidden lg:flex flex-col items-center justify-center p-5 border-2 border-[var(--gold)]/50 rounded-full aspect-square w-32 h-32 bg-white/10 text-center relative shrink-0 shadow-lg backdrop-blur-sm">
-                      <div className="flex flex-col items-center justify-center">
-                        <span className="text-[0.9rem] tracking-[var(--tracking-looser)] text-[var(--gold)] uppercase font-bold">{webstoreConfig?.heroBadgeText1 || '100% ALAMI'}</span>
-                        <span className="font-serif italic text-[1.6rem] text-white my-0.5">{webstoreConfig?.heroBadgeText2 || 'Ragi Alami'}</span>
-                        <span className="text-[0.8rem] text-white/60 font-semibold">{webstoreConfig?.heroBadgeText3 || 'TANPA PENGAWET'}</span>
+                    {/* Right art: Premium Badge — Rounded Rectangle Premium */}
+                    <div 
+                      className="hidden lg:flex flex-col items-center justify-center px-6 py-5 rounded-xl text-center relative shrink-0 shadow-lg backdrop-blur-sm min-w-[140px]"
+                      style={{
+                        backgroundColor: webstoreConfig?.badgeCircleBgColor || 'rgba(255,255,255,0.10)',
+                        border: `${webstoreConfig?.badgeCircleBorderWidth ?? 2}px solid ${webstoreConfig?.badgeCircleBorderColor || 'rgba(203,162,88,0.5)'}`,
+                      }}
+                    >
+                      {/* Icon bintang premium */}
+                      <span className="text-[var(--gold)] text-[1.2rem] mb-1">★</span>
+                      <div className="flex flex-col items-center justify-center space-y-0.5">
+                        <span 
+                          className="text-[0.85rem] tracking-[var(--tracking-looser)] uppercase font-bold"
+                          style={{color: webstoreConfig?.badgeCircleTextColor || 'var(--gold)'}}
+                        >
+                          {webstoreConfig?.heroBadgeText1 || '100% ALAMI'}
+                        </span>
+                        <span className="font-serif italic text-[1.4rem] text-white my-0.5 leading-tight">
+                          {webstoreConfig?.heroBadgeText2 || 'Ragi Alami'}
+                        </span>
+                        <span className="text-[0.7rem] text-white/60 font-semibold">
+                          {webstoreConfig?.heroBadgeText3 || 'TANPA PENGAWET'}
+                        </span>
                       </div>
                     </div>
                   </div>
