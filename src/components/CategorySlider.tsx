@@ -17,14 +17,10 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 };
 
 export const CategorySlider: React.FC = () => {
-  const { activeCategory, setActiveCategory, webstoreConfig } = useStore();
-
-  const categories = webstoreConfig?.categories?.length
-    ? webstoreConfig.categories
-    : ['Roti & Sourdough', 'Viennoiserie & Croissant', 'Kue & Tart', 'Kue Kering & Cookies', 'Minuman Kopi & Teh'];
+  const { activeCategory, setActiveCategory, categories, categoryIcons } = useStore();
 
   const getIcon = (cat: string) => {
-    const iconName = webstoreConfig?.categoryIcons?.[cat];
+    const iconName = categoryIcons[cat];
     return iconName ? ICON_MAP[iconName] : null;
   };
 

@@ -23,6 +23,7 @@ import {
 } from 'firebase/firestore';
 import { auth, db, googleProvider, handleFirestoreError, OperationType } from '../firebase';
 import { Product, CartItem, Order, Notification, ChatRoom, WebStoreConfig, PaymentMethod } from '../types';
+import { CATEGORIES as FALLBACK_CATEGORIES } from '../data/presets';
 
 interface StoreContextType {
   currentUser: any;
@@ -56,6 +57,9 @@ interface StoreContextType {
   paymentMethods: PaymentMethod[];
   storeName: string;
   cabangId: string;
+  // 📂 Categories from ERP — synced via Firestore categories/{cabangId}
+  categories: string[];
+  categoryIcons: Record<string, string>;
 }
 
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
@@ -75,6 +79,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [webstoreConfig, setWebstoreConfig] = useState<WebStoreConfig | null>(null);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [detectedCabangId, setDetectedCabangId] = useState<string>('pusat');
+  // 📂 Categories from ERP — synced via Firestore categories/{cabangId}
+  const [categories, setCategories] = useState<string[]>(FALLBACK_CATEGORIES);
+  const [categoryIcons, setCategoryIcons] = useState<Record<string, string>>({});
 
   // Trigger custom in-app notifications/toasts
   const triggerToast = (title: string, message: string) => {
@@ -253,6 +260,25 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, []);
 
+  // 📂 Listen to categories from Firestore (synced from ERP)
+  useEffect(() => {
+    const cabang = detectedCabangId || 'pusat';
+    const catRef = doc(db, 'categories', cabang);
+    const unsubscribe = onSnapshot(catRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        const cats = data.categories || [];
+        if (cats.length > 0) {
+          setCategories(cats);
+          setCategoryIcons(data.categoryIcons || {});
+        }
+      }
+    }, (error) => {
+      console.warn('Failed to load categories, using fallback:', error);
+    });
+    return () => unsubscribe();
+  }, [detectedCabangId]);
+
   // Derived values from config
   const paymentMethods = (webstoreConfig?.paymentMethods || []).filter(pm => pm.active).sort((a, b) => a.order - b.order);
   const storeName = webstoreConfig?.storeName || 'Near Bakery & Co.';
@@ -359,6 +385,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       paymentMethods,
       storeName,
       cabangId,
+      // 📂 Categories from ERP
+      categories,
+      categoryIcons,
     }}>
       {children}
     </StoreContext.Provider>
