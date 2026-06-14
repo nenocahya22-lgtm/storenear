@@ -19,7 +19,8 @@ import {
   setDoc,
   getDoc,
   doc, 
-  serverTimestamp 
+  serverTimestamp,
+  writeBatch
 } from 'firebase/firestore';
 import { auth, db, googleProvider, handleFirestoreError, OperationType } from '../firebase';
 import { Product, CartItem, Order, Notification, ChatRoom, WebStoreConfig, PaymentMethod } from '../types';
@@ -35,8 +36,8 @@ interface StoreContextType {
   removeFromCart: (productId: string) => void;
   updateCartQty: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  currentView: 'home' | 'product-detail' | 'cart' | 'checkout' | 'orders' | 'seller';
-  setView: (view: 'home' | 'product-detail' | 'cart' | 'checkout' | 'orders' | 'seller') => void;
+  currentView: 'home' | 'product-detail' | 'cart' | 'checkout' | 'orders' | 'seller' | 'about' | 'privacy';
+  setView: (view: 'home' | 'product-detail' | 'cart' | 'checkout' | 'orders' | 'seller' | 'about' | 'privacy') => void;
   selectedProductId: string | null;
   setSelectedProductId: (id: string | null) => void;
   activeCategory: string | null;
@@ -69,7 +70,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [userRole, setUserRole] = useState<'pembeli' | 'penjual'>('pembeli');
   const [isLoading, setIsLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [currentView, setView] = useState<'home' | 'product-detail' | 'cart' | 'checkout' | 'orders' | 'seller'>('home');
+  const [currentView, setView] = useState<'home' | 'product-detail' | 'cart' | 'checkout' | 'orders' | 'seller' | 'about' | 'privacy'>('home');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -279,8 +280,43 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return () => unsubscribe();
   }, [detectedCabangId]);
 
-  // Derived values from config
-  const paymentMethods = (webstoreConfig?.paymentMethods || []).filter(pm => pm.active).sort((a, b) => a.order - b.order);
+  // Default payment methods if none provided from ERP config
+  const getDefaultPaymentMethods = (): PaymentMethod[] => [
+    {
+      id: 'bca-transfer',
+      type: 'transfer_bank',
+      name: 'Transfer Bank (BCA)',
+      label: 'Transfer Bank BCA (Verifikasi Otomatis Admin)',
+      active: true,
+      bankName: 'Bank BCA',
+      accountNumber: '77359182301',
+      accountName: 'Near Bakery & Co. PT',
+      order: 1,
+    },
+    {
+      id: 'cod',
+      type: 'cod',
+      name: 'COD (Cash On Delivery)',
+      label: 'COD - Pembayaran Cash saat Roti Diantarkan Kurir',
+      active: true,
+      order: 2,
+    },
+    {
+      id: 'ewallet-gopay',
+      type: 'ewallet',
+      name: 'E-Wallet (Gopay/OVO)',
+      label: 'Dompet Digital Gopay, OVO, atau ShopeePay',
+      active: true,
+      phoneNumber: '6281234567890',
+      order: 3,
+    },
+  ];
+
+  // Derived values from config — fallback to defaults if config is missing payment methods
+  const effectivePaymentMethods = (webstoreConfig?.paymentMethods || []);
+  const paymentMethods = effectivePaymentMethods.length > 0
+    ? effectivePaymentMethods.filter(pm => pm.active).sort((a, b) => a.order - b.order)
+    : getDefaultPaymentMethods();
   const storeName = webstoreConfig?.storeName || 'Near Bakery & Co.';
 
   // Set document title
@@ -339,15 +375,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [currentUser]);
 
   const markNotificationsAsRead = () => {
-    notifications.forEach(async (notif) => {
-      if (!notif.read) {
-        try {
-          await setDoc(doc(db, 'notifications', notif.id), { ...notif, read: true });
-        } catch (e) {
-          console.error(e);
-        }
-      }
+    const unreadNotifs = notifications.filter(n => !n.read);
+    if (unreadNotifs.length === 0) return;
+    
+    const batch = writeBatch(db);
+    unreadNotifs.forEach(notif => {
+      batch.set(doc(db, 'notifications', notif.id), { ...notif, read: true });
     });
+    batch.commit().catch(e => console.error('Batch mark read error:', e));
   };
 
   const unreadNotificationCount = notifications.filter(n => !n.read).length;

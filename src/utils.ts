@@ -21,6 +21,19 @@ export const formatRupiah = (value: number): string => {
 /**
  * Returns Tailwind CSS classes for order status badges.
  */
+/**
+ * Placeholder SVG image untuk produk tanpa gambar.
+ * Menampilkan icon croissant sederhana dengan warna brand.
+ */
+export const PLACEHOLDER_IMAGE = 'data:image/svg+xml,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+    <rect width="400" height="400" fill="#f2f0eb"/>
+    <circle cx="200" cy="180" r="60" fill="#d4e9e2"/>
+    <path d="M160 240 Q200 280 240 240" stroke="#d4e9e2" stroke-width="4" fill="none"/>
+    <text x="200" y="310" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" fill="#006241" font-weight="600">Near Bakery &amp; Co.</text>
+  </svg>`
+);
+
 export const getStatusBadgeStyle = (status: OrderStatus): string => {
   switch (status) {
     case 'Menunggu Pembayaran':

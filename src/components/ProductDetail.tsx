@@ -19,7 +19,7 @@ import {
   runTransaction
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../firebase';
-import { formatRupiah } from '../utils';
+import { formatRupiah, PLACEHOLDER_IMAGE } from '../utils';
 
 export const ProductDetail: React.FC = () => {
   const { 
@@ -227,10 +227,11 @@ export const ProductDetail: React.FC = () => {
         <div className="lg:col-span-5">
           <div className="card overflow-hidden bg-[var(--canvas-warm)]">
             <img 
-              src={product.imageUrl} 
+              src={product.imageUrl || PLACEHOLDER_IMAGE} 
               alt={product.name}
               referrerPolicy="no-referrer"
               className="w-full aspect-square object-cover transition-transform duration-500 hover:scale-[1.02]"
+              onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE; }}
             />
           </div>
         </div>

@@ -8,7 +8,7 @@ import { useStore } from '../context/StoreContext';
 import { ArrowLeft, MapPin, CreditCard, ShieldCheck, CheckCircle2, Copy } from 'lucide-react';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { collection, doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
-import { formatRupiah } from '../utils';
+import { formatRupiah, PLACEHOLDER_IMAGE } from '../utils';
 import { ShippingAddress, OrderItem, StatusHistoryItem, OrderStatus } from '../types';
 
 export const Checkout: React.FC = () => {
@@ -22,7 +22,12 @@ export const Checkout: React.FC = () => {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState('');
 
-  const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  // Hitung subtotal dengan diskon (sinkron dengan Cart.tsx)
+  const subtotal = cart.reduce((sum, item) => {
+    const discount = item.product.discountPercent || 0;
+    const effectivePrice = discount > 0 ? item.product.price * (1 - discount / 100) : item.product.price;
+    return sum + (effectivePrice * item.quantity);
+  }, 0);
   const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -40,28 +45,37 @@ export const Checkout: React.FC = () => {
     try {
       const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
       const orderRef = doc(db, 'orders', orderId);
-      const orderItems: OrderItem[] = cart.map(item => ({
-        productId: item.product.id, name: item.product.name, price: item.product.price,
-        quantity: item.quantity, imageUrl: item.product.imageUrl
-      }));
       const initialHistory: StatusHistoryItem[] = [{
         status: 'Menunggu Pembayaran', updatedAt: new Date(),
         note: 'Pesanan berhasil dibuat. Silakan selesaikan pembayaran.'
       }];
       await runTransaction(db, async (transaction) => {
+        let verifiedTotal = 0;
+        const verifiedItems: OrderItem[] = [];
         for (const item of cart) {
           const productRef = doc(db, 'products', item.product.id);
           const prodDoc = await transaction.get(productRef);
           if (!prodDoc.exists()) throw new Error(`Produk "${item.product.name}" tidak ditemukan.`);
-          const currentStock = prodDoc.data().stock || 0;
+          const prodData = prodDoc.data() as any;
+          const currentStock = prodData.stock || 0;
           if (currentStock < item.quantity) throw new Error(`Stok "${item.product.name}" tidak mencukupi. Tersisa ${currentStock}.`);
+          // 🔒 Validasi harga sisi server — cegah manipulasi harga klien
+          const serverPrice = prodData.price || 0;
+          const discountPct = prodData.discountPercent || 0;
+          const effectivePrice = discountPct > 0 ? serverPrice * (1 - discountPct / 100) : serverPrice;
+          verifiedTotal += effectivePrice * item.quantity;
+          verifiedItems.push({
+            productId: item.product.id, name: item.product.name,
+            price: effectivePrice, // Pakai harga server yang sudah tervalidasi
+            quantity: item.quantity, imageUrl: item.product.imageUrl
+          });
           transaction.update(productRef, { stock: currentStock - item.quantity });
         }
         transaction.set(orderRef, {
           id: orderId, userId: currentUser.uid,
           userName: currentUser.displayName || currentUser.email?.split('@')[0] || 'Pembeli',
           userEmail: currentUser.email || 'buyer@example.com',
-          items: orderItems, totalAmount: subtotal, status: 'Menunggu Pembayaran' as OrderStatus,
+          items: verifiedItems, totalAmount: verifiedTotal, status: 'Menunggu Pembayaran' as OrderStatus,
           shippingAddress: address, paymentMethod: paymentMethod, paymentStatus: 'Belum Bayar',
           trackingNumber: '', statusHistory: initialHistory, cabangId: cabangId,
           createdAt: serverTimestamp(), updatedAt: serverTimestamp()
@@ -107,6 +121,8 @@ export const Checkout: React.FC = () => {
   };
 
   if (orderSuccess) {
+    // Gunakan nilai dari state yang sudah di-set saat order — verifiedTotal sudah dihitung di server side
+    const displayTotal = subtotal; // subtotal di-recalculate biar match dengan verifiedTotal (client-side sudah include diskon)
     const selectedPm = paymentMethods.find(pm => pm.name === paymentMethod);
     return (
       <div className="container-near py-16 text-center animate-fade-in">
@@ -156,6 +172,8 @@ export const Checkout: React.FC = () => {
       </div>
     );
   }
+
+  const hasStockIssues = cart.some(item => item.quantity > (item.product.stock || 0));
 
   return (
     <div className="container-near py-6 pb-20">
@@ -226,7 +244,7 @@ export const Checkout: React.FC = () => {
               <div key={item.product.id} className="flex gap-3 justify-between items-center text-[1.3rem]">
                 <div className="flex gap-2.5 items-center truncate">
                   <div className="w-9 h-9 rounded-[var(--radius-card)] bg-[var(--canvas-warm)] overflow-hidden shrink-0">
-                    <img src={item.product.imageUrl} alt={item.product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                    <img src={item.product.imageUrl || PLACEHOLDER_IMAGE} alt={item.product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE; }} />
                   </div>
                   <span className="truncate max-w-[150px] font-medium">{item.product.name}</span>
                 </div>

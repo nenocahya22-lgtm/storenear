@@ -28,7 +28,9 @@ import {
   TrendingUp,
   RotateCcw,
   Star,
-  Croissant
+  Croissant,
+  Info,
+  Shield
 } from 'lucide-react';
 
 function AppContent() {
@@ -231,6 +233,8 @@ function AppContent() {
             {currentView === 'cart' && <Cart />}
             {currentView === 'checkout' && <Checkout />}
             {currentView === 'orders' && <OrderTracking />}
+            {currentView === 'about' && <AboutPage />}
+            {currentView === 'privacy' && <PrivacyPage />}
           </div>
       </main>
 
@@ -322,11 +326,83 @@ function AppContent() {
               {webstoreConfig?.footerCopyright || '© 2026 Near Bakery & Co. — Artisan Bakery Premium'}
             </p>
             <div className="flex items-center gap-4 text-[1.1rem]" style={{color: 'rgba(255,255,255,0.70)'}}>
+              <button onClick={() => setView('about')} className="hover:text-white transition-colors cursor-pointer bg-transparent border-none font-inherit">Tentang</button>
+              <button onClick={() => setView('privacy')} className="hover:text-white transition-colors cursor-pointer bg-transparent border-none font-inherit">Kebijakan</button>
               {(webstoreConfig?.footerLinks || ['Menu', 'Rewards', 'Gift Cards']).map((link, i) => (
                 <span key={i}>{link}</span>
               ))}
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AboutPage() {
+  const { setView } = useStore();
+  return (
+    <div className="container-near py-12 animate-fade-in">
+      <button onClick={() => setView('home')} className="flex items-center gap-2 text-[1.3rem] font-semibold text-[var(--green-accent)] hover:text-[var(--brand-green)] transition-colors mb-8 cursor-pointer">
+        <ArrowRight size={14} className="rotate-180" />
+        <span>Kembali</span>
+      </button>
+      <div className="card max-w-3xl mx-auto p-8 md:p-12">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--brand-green)] flex items-center justify-center text-white">
+            <Info size={24} />
+          </div>
+          <h1 className="text-h1 text-[var(--text-black)]">Tentang Near Bakery & Co.</h1>
+        </div>
+        <div className="space-y-4 text-[1.3rem] text-[var(--text-black-soft)] leading-relaxed">
+          <p>
+            <strong className="text-[var(--text-black)]">Near Bakery & Co.</strong> adalah toko roti artisan premium yang 
+            menyajikan roti sourdough alami, croissant mentega renyah, dan aneka kue berkualitas tinggi. 
+            Setiap produk dibuat dengan bahan-bahan pilihan tanpa pengawet dan dipanggang segar setiap hari.
+          </p>
+          <p>
+            Berdiri dengan filosofi <em className="text-[var(--brand-green)]">"Quality First, Service Always"</em>, 
+            kami berkomitmen untuk memberikan pengalaman bersantap terbaik bagi setiap pelanggan. 
+            Dari dapur artisan kami hingga ke meja Anda — setiap gigitan adalah cerita cinta pada roti.
+          </p>
+          <div className="bg-[var(--canvas-warm)] rounded-[var(--radius-card)] p-5 mt-4">
+            <h3 className="font-bold text-[var(--text-black)] mb-2">📍 Lokasi</h3>
+            <p>Dapur Pusat — Sektor 12, DKI Jakarta</p>
+            <p className="mt-3"><strong>Jam Operasional:</strong> Senin — Sabtu, 07.00 – 19.00 WIB</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PrivacyPage() {
+  const { setView } = useStore();
+  return (
+    <div className="container-near py-12 animate-fade-in">
+      <button onClick={() => setView('home')} className="flex items-center gap-2 text-[1.3rem] font-semibold text-[var(--green-accent)] hover:text-[var(--brand-green)] transition-colors mb-8 cursor-pointer">
+        <ArrowRight size={14} className="rotate-180" />
+        <span>Kembali</span>
+      </button>
+      <div className="card max-w-3xl mx-auto p-8 md:p-12">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-2xl bg-[var(--house-green)] flex items-center justify-center text-white">
+            <Shield size={24} />
+          </div>
+          <h1 className="text-h1 text-[var(--text-black)]">Kebijakan Privasi</h1>
+        </div>
+        <div className="space-y-4 text-[1.3rem] text-[var(--text-black-soft)] leading-relaxed">
+          <p>
+            <strong className="text-[var(--text-black)]">Near Bakery & Co.</strong> menghormati privasi Anda. 
+            Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda.
+          </p>
+          <h3 className="font-bold text-[var(--text-black)] mt-4">📋 Data yang Kami Kumpulkan</h3>
+          <p>Kami hanya mengumpulkan data yang Anda berikan secara sukarela: nama, alamat email, nomor telepon, dan alamat pengiriman untuk memproses pesanan Anda.</p>
+          <h3 className="font-bold text-[var(--text-black)] mt-4">🔒 Keamanan Data</h3>
+          <p>Semua data transaksi disimpan di Firebase dengan enkripsi standar industri. Kami tidak membagikan data pribadi Anda kepada pihak ketiga tanpa izin Anda.</p>
+          <h3 className="font-bold text-[var(--text-black)] mt-4">🍪 Cookie</h3>
+          <p>Kami menggunakan cookie untuk pengalaman berbelanja yang lebih baik — termasuk menyimpan keranjang belanja dan preferensi Anda.</p>
+          <p className="mt-6 text-[1.1rem]">Pertanyaan tentang privasi? Hubungi kami di <strong className="text-[var(--brand-green)]">hello@nearbakery.com</strong></p>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import React from 'react';
 import { ShoppingCart, Star, Eye, Plus } from 'lucide-react';
 import { Product } from '../types';
 import { useStore } from '../context/StoreContext';
-import { formatRupiah } from '../utils';
+import { formatRupiah, PLACEHOLDER_IMAGE } from '../utils';
 
 interface ProductCardProps {
   product: Product;
@@ -46,11 +46,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Image Container with hover zoom */}
       <div className="w-full aspect-square overflow-hidden bg-[var(--canvas-warm)] relative">
         <img 
-          src={product.imageUrl} 
+          src={product.imageUrl || PLACEHOLDER_IMAGE} 
           alt={product.name}
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           loading="lazy"
+          onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE; }}
         />
         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <div className="bg-[var(--green-accent)] text-white px-3.5 py-2 rounded-[var(--button-radius)] text-[1.2rem] font-semibold flex items-center gap-1.5 shadow-md">

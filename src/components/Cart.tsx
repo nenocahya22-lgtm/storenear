@@ -3,15 +3,46 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { Trash2, ArrowLeft, ShoppingBag, Plus, Minus, ArrowRight, ShoppingCart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Trash2, ArrowLeft, ShoppingBag, Plus, Minus, ArrowRight, ShoppingCart, AlertTriangle } from 'lucide-react';
 import { useStore } from '../context/StoreContext';
-import { formatRupiah } from '../utils';
+import { formatRupiah, PLACEHOLDER_IMAGE } from '../utils';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 
 export const Cart: React.FC = () => {
   const { cart, updateCartQty, removeFromCart, setView, clearCart } = useStore();
 
-  const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  // ─── CEK STOK REAL-TIME DARI FIRESTORE ───
+  const [stockWarnings, setStockWarnings] = useState<Record<string, number>>({});
+  useEffect(() => {
+    const checkStock = async () => {
+      const warnings: Record<string, number> = {};
+      for (const item of cart) {
+        try {
+          const prodRef = doc(db, 'products', item.product.id);
+          const snap = await getDoc(prodRef);
+          if (snap.exists()) {
+            const currentStock = snap.data().stock || 0;
+            if (currentStock < item.quantity) {
+              warnings[item.product.id] = currentStock;
+            }
+          }
+        } catch (e) {
+          // silent — offline mode
+        }
+      }
+      setStockWarnings(warnings);
+    };
+    checkStock();
+  }, [JSON.stringify(cart.map(i => ({ id: i.product.id, qty: i.quantity })))]);
+
+  // Hitung subtotal dengan memperhitungkan diskon
+  const subtotal = cart.reduce((sum, item) => {
+    const discount = item.product.discountPercent || 0;
+    const effectivePrice = discount > 0 ? item.product.price * (1 - discount / 100) : item.product.price;
+    return sum + (effectivePrice * item.quantity);
+  }, 0);
   const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   if (cart.length === 0) {
@@ -48,7 +79,8 @@ export const Cart: React.FC = () => {
           {cart.map((item) => (
             <div key={item.product.id} className="card p-4 flex gap-4 hover:shadow-md transition-shadow">
               <div className="w-20 h-20 bg-[var(--canvas-warm)] rounded-[var(--radius-card)] overflow-hidden shrink-0">
-                <img src={item.product.imageUrl} alt={item.product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                <img src={item.product.imageUrl} alt={item.product.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" 
+                  onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMAGE; }} />
               </div>
               <div className="flex flex-col justify-between flex-1 min-w-0">
                 <div>
@@ -59,6 +91,11 @@ export const Cart: React.FC = () => {
                     </button>
                   </div>
                   <span className="text-[1rem] text-[var(--text-black-soft)] tracking-[var(--tracking-looser)] uppercase mt-1 block">{item.product.category}</span>
+                  {stockWarnings[item.product.id] !== undefined && (
+                    <span className="inline-flex items-center gap-1 mt-1 text-[1rem] text-[var(--red)] font-bold bg-red-50 px-2 py-0.5 rounded-full">
+                      <AlertTriangle size={10} /> Stok tersisa {stockWarnings[item.product.id]}, tidak cukup untuk pesanan ini
+                    </span>
+                  )}
                 </div>
                 <div className="flex justify-between items-center mt-2 flex-wrap gap-2">
                   <span className="text-[1.6rem] font-bold text-[var(--text-black)]">{formatRupiah(item.product.price)}</span>

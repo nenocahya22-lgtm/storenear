@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../context/StoreContext';
 import { db } from '../firebase';
-import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, arrayUnion, serverTimestamp, setDoc } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, doc, updateDoc, arrayUnion, serverTimestamp, setDoc, getDoc } from 'firebase/firestore';
 import { formatRupiah, getStatusBadgeStyle } from '../utils';
 import { Order, OrderStatus } from '../types';
 import { Package, Truck, CheckCircle, Clock, ShoppingBag, MapPin, Eye, Star } from 'lucide-react';
@@ -45,12 +45,22 @@ export const OrderTracking: React.FC = () => {
   const handleCompleteOrder = async (orderId: string) => {
     try {
       const orderRef = doc(db, 'orders', orderId);
+      // 🔒 Hanya auto-Lunas untuk COD. Transfer Bank harus diverifikasi admin.
+      const orderDoc = await getDoc(orderRef);
+      if (!orderDoc.exists()) { triggerToast('Error', 'Pesanan tidak ditemukan.'); return; }
+      const ordData = orderDoc.data() as any;
+      const isCod = ordData.paymentMethod?.toLowerCase().includes('cod');
       const noteStr = 'Pesanan telah diterima oleh Pembeli.';
-      await updateDoc(orderRef, {
-        status: 'Selesai' as OrderStatus, paymentStatus: 'Lunas',
+      const updateData: any = {
+        status: 'Selesai' as OrderStatus,
         updatedAt: serverTimestamp(),
         statusHistory: arrayUnion({ status: 'Selesai' as OrderStatus, updatedAt: new Date(), note: noteStr })
-      });
+      };
+      // Hanya set Lunas jika COD (pembayaran di tempat sudah lunas saat diterima)
+      if (isCod) {
+        updateData.paymentStatus = 'Lunas';
+      }
+      await updateDoc(orderRef, updateData);
       const notifRef = doc(collection(db, 'notifications'));
       await setDoc(notifRef, {
         id: notifRef.id, userId: currentUser.uid, title: 'Pesanan Selesai 🎉',
