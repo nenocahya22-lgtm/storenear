@@ -94,12 +94,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <span className="text-[var(--text-black)] font-bold text-[1.6rem] md:text-[1.8rem] block tracking-[var(--tracking-tight)]">
                 {formatRupiah(product.price)}
               </span>
+            )}
+          </div>
           <button 
             onClick={(e) => {
               e.stopPropagation();
               addToCart(product);
             }}
-            
             className="btn btn-primary !p-2.5 !rounded-full !w-9 !h-9 flex items-center justify-center shadow-sm"
             style={{ borderRadius: '50%', minWidth: 0, padding: '8px' }}
             title="Tambah Ke Keranjang"

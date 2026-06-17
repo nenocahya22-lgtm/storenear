@@ -54,7 +54,6 @@ export const ProductDetail: React.FC = () => {
           name: data.name,
           description: data.description,
           price: data.price,
-          stock: data.stock,
           imageUrl: data.imageUrl,
           category: data.category,
           rating: data.rating,
@@ -257,6 +256,9 @@ export const ProductDetail: React.FC = () => {
             </div>
             <span className="text-[1.3rem] font-bold text-[var(--text-black)]">{(product.rating || 5.0).toFixed(1)}</span>
             <span className="h-4 w-px bg-gray-200" />
+            <span className="text-[1.2rem] text-[var(--text-black-soft)]"><strong>{product.reviewCount || 0}</strong> ulasan</span>
+            <span className="h-4 w-px bg-gray-200" />
+            <span className={`text-[1rem] font-bold tracking-[var(--tracking-looser)] uppercase ${product.stock > 0 ? 'text-[var(--text-black-soft)]' : 'text-[var(--red)]'}`}>
 
           {/* Price Display */}
           <div className="bg-[var(--canvas-warm)] rounded-[var(--radius-card)] p-5 mb-5">
@@ -290,8 +292,8 @@ export const ProductDetail: React.FC = () => {
 
           {/* CTA Section */}
           <div className="pt-5 border-t border-gray-100">
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                {/* Qty Stepper */}
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                {/* Qty Stepper — Starbucks style */}
                 <div className="flex items-center border border-gray-200 rounded-[var(--button-radius)] p-1 bg-white">
                   <button onClick={handleQtyDecrease} className="p-2 text-[var(--text-black-soft)] hover:text-[var(--text-black)] rounded-full hover:bg-[var(--canvas-warm)] transition-colors cursor-pointer">
                     <Minus size={12} />
@@ -313,7 +315,6 @@ export const ProductDetail: React.FC = () => {
                   </button>
                 </div>
               </div>
-            )}
           </div>
         </div>
       </div>
