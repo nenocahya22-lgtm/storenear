@@ -105,7 +105,7 @@ export const ProductDetail: React.FC = () => {
     );
   }
 
-  const handleQtyIncrease = () => { if (quantity < product.stock) setQuantity(quantity + 1); };
+  const handleQtyIncrease = () => { setQuantity(quantity + 1); };
   const handleQtyDecrease = () => { if (quantity > 1) setQuantity(quantity - 1); };
 
   const handleStartChat = async () => {
@@ -257,12 +257,6 @@ export const ProductDetail: React.FC = () => {
             </div>
             <span className="text-[1.3rem] font-bold text-[var(--text-black)]">{(product.rating || 5.0).toFixed(1)}</span>
             <span className="h-4 w-px bg-gray-200" />
-            <span className="text-[1.2rem] text-[var(--text-black-soft)]"><strong>{product.reviewCount || 0}</strong> ulasan</span>
-            <span className="h-4 w-px bg-gray-200" />
-            <span className={`text-[1rem] font-bold tracking-[var(--tracking-looser)] uppercase ${product.stock > 0 ? 'text-[var(--text-black-soft)]' : 'text-[var(--red)]'}`}>
-              {product.stock > 0 ? `Stok ${product.stock}` : 'Habis'}
-            </span>
-          </div>
 
           {/* Price Display */}
           <div className="bg-[var(--canvas-warm)] rounded-[var(--radius-card)] p-5 mb-5">
@@ -296,9 +290,8 @@ export const ProductDetail: React.FC = () => {
 
           {/* CTA Section */}
           <div className="pt-5 border-t border-gray-100">
-            {product.stock > 0 ? (
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                {/* Qty Stepper — Starbucks style */}
+                {/* Qty Stepper */}
                 <div className="flex items-center border border-gray-200 rounded-[var(--button-radius)] p-1 bg-white">
                   <button onClick={handleQtyDecrease} className="p-2 text-[var(--text-black-soft)] hover:text-[var(--text-black)] rounded-full hover:bg-[var(--canvas-warm)] transition-colors cursor-pointer">
                     <Minus size={12} />
@@ -318,15 +311,6 @@ export const ProductDetail: React.FC = () => {
                     <ShoppingCart size={14} />
                     <span>Masukkan Keranjang</span>
                   </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex gap-3">
-                <button onClick={handleStartChat} className="btn btn-outline flex-1 text-[1.3rem]">
-                  <MessageSquare size={14} /> Tanya Baker
-                </button>
-                <div className="flex-[2] bg-[var(--canvas-warm)] text-[var(--text-black-soft)] border border-gray-200 py-3 rounded-[var(--button-radius)] text-[1.3rem] font-semibold text-center">
-                  Stok Habis
                 </div>
               </div>
             )}

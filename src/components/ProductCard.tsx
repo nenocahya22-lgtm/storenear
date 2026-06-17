@@ -94,18 +94,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <span className="text-[var(--text-black)] font-bold text-[1.6rem] md:text-[1.8rem] block tracking-[var(--tracking-tight)]">
                 {formatRupiah(product.price)}
               </span>
-            )}
-            <span className="text-[1rem] text-[var(--text-black-soft)]">
-              Stok: <span className={product.stock > 0 ? 'text-[var(--green-accent)] font-semibold' : 'text-[var(--red)] font-semibold'}>{product.stock > 0 ? `${product.stock}` : 'Habis'}</span>
-            </span>
-          </div>
-
           <button 
             onClick={(e) => {
               e.stopPropagation();
-              if (product.stock > 0) addToCart(product);
+              addToCart(product);
             }}
-            disabled={product.stock <= 0}
+            
             className="btn btn-primary !p-2.5 !rounded-full !w-9 !h-9 flex items-center justify-center shadow-sm"
             style={{ borderRadius: '50%', minWidth: 0, padding: '8px' }}
             title="Tambah Ke Keranjang"
