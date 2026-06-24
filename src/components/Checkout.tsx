@@ -9,7 +9,7 @@ import { ArrowLeft, MapPin, CreditCard, ShieldCheck, CheckCircle2, Copy } from '
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { collection, doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import { formatRupiah, PLACEHOLDER_IMAGE } from '../utils';
-import { ShippingAddress, OrderItem, StatusHistoryItem, OrderStatus } from '../types';
+import { ShippingAddress, OrderItem, StatusHistoryItem, OrderStatus } from '../types';import { PaymentProofUpload } from './PaymentProofUpload';
 
 export const Checkout: React.FC = () => {
   const { cart, clearCart, setView, currentUser, triggerToast, paymentMethods, cabangId, webstoreConfig } = useStore();
@@ -157,7 +157,7 @@ export const Checkout: React.FC = () => {
               </div>}
             </div>
           )}
-          {selectedPm?.type === 'cod' && (
+          {selectedPm?.type === 'transfer_bank' && selectedPm && (            <PaymentProofUpload              orderId={placedOrderId}              rekeningBank={{                bankName: selectedPm.bankName,                accountNumber: selectedPm.accountNumber,                accountName: selectedPm.accountName,              }}            />          )}          {selectedPm?.type === 'cod' && (
             <div className="bg-[var(--canvas-warm)] p-6 mb-8 text-left rounded-[var(--radius-card)]">
               <h4 className="text-[1rem] tracking-[var(--tracking-looser)] font-bold text-[var(--text-black-soft)] mb-3 border-b border-gray-200/30 pb-2 uppercase">COD</h4>
               <p className="text-[1.3rem] text-[var(--text-black-soft)]">Bayar <strong className="text-[var(--text-black)]">{formatRupiah(subtotal)}</strong> saat kurir tiba.</p>

@@ -41,6 +41,9 @@ export interface OrderItem {
 
 export interface StatusHistoryItem {
   status: OrderStatus;
+  paymentProofUrl?: string;
+  proofNeedsReview?: boolean;
+  proofUploadedAt?: string;
   updatedAt: any; // Firestore Timestamp
   note: string;
 }
@@ -61,6 +64,9 @@ export interface Order {
   trackingNumber?: string;
   statusHistory: StatusHistoryItem[];
   createdAt: any; // Firestore Timestamp
+  paymentProofUrl?: string;
+  proofNeedsReview?: boolean;
+  proofUploadedAt?: string;
   updatedAt: any; // Firestore Timestamp
 }
 
