@@ -258,7 +258,8 @@ export const ProductDetail: React.FC = () => {
             <span className="h-4 w-px bg-gray-200" />
             <span className="text-[1.2rem] text-[var(--text-black-soft)]"><strong>{product.reviewCount || 0}</strong> ulasan</span>
             <span className="h-4 w-px bg-gray-200" />
-            <span className={`text-[1rem] font-bold tracking-[var(--tracking-looser)] uppercase ${product.stock > 0 ? 'text-[var(--text-black-soft)]' : 'text-[var(--red)]'}`}>
+            <span className={`text-[1rem] font-bold tracking-[var(--tracking-looser)] uppercase ${product.stock > 0 ? 'text-[var(--text-black-soft)]' : 'text-[var(--red)]'}`}>{product.stock > 0 ? 'Stok Tersedia' : 'Stok Habis'}</span>
+          </div>
 
           {/* Price Display */}
           <div className="bg-[var(--canvas-warm)] rounded-[var(--radius-card)] p-5 mb-5">
