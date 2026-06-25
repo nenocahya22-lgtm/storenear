@@ -1,7 +1,3 @@
 # robots.txt for Near Bakery & Co. Web Store
-# Allow all crawlers to index the site
 User-agent: *
 Allow: /
-
-# Sitemap
-Sitemap: https://storebakery.web.app/sitemap.xml

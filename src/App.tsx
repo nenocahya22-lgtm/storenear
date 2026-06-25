@@ -128,8 +128,9 @@ function AppContent() {
                       
                       {!currentUser ? (
                         <div className="pt-3">
-                          <button
-                            onClick={() => setLoginModalOpen(true)}
+                          <button 
+                            aria-label="Daftar atau masuk untuk memesan"
+              onClick={() => setLoginModalOpen(true)}
                             className="btn btn-white text-[1.4rem] px-6 py-3"
                           >
                             <span>{webstoreConfig?.heroBtnText || 'Daftar & Pesan Sekarang'}</span>
@@ -243,7 +244,7 @@ function AppContent() {
 
       {/* Bottom responsive layout navigation bar for mobile hp screens */}
       <footer className="md:hidden sticky bottom-0 z-30 w-full bg-white border-t border-gray-150 shadow-2xl py-1 px-4 flex justify-around items-center">
-        <button
+        <button 
           onClick={() => {
             setUserRole('pembeli');
             setView('home');
@@ -256,7 +257,7 @@ function AppContent() {
           <span className="text-[9px] tracking-tight">Beranda</span>
         </button>
 
-        <button
+        <button 
           onClick={() => {
             if (!currentUser) {
               triggerToast('Kunci', 'Masuk akun dahulu untuk melacak pesanan.');
@@ -272,7 +273,7 @@ function AppContent() {
           <span className="text-[9px] tracking-tight">Pesanan saya</span>
         </button>
 
-        <button
+        <button 
           onClick={() => {
             if (!currentUser) {
               triggerToast('Akses Kunci', 'Masuk akun dahulu untuk berkirim pesan dengan Penjual.');
@@ -366,7 +367,7 @@ function AboutPage() {
             Dari dapur artisan kami hingga ke meja Anda — setiap gigitan adalah cerita cinta pada roti.
           </p>
           <div className="bg-[var(--canvas-warm)] rounded-[var(--radius-card)] p-5 mt-4">
-            <h3 className="font-bold text-[var(--text-black)] mb-2">📍 Lokasi</h3>
+            <h2 className="font-bold text-[var(--text-black)] mb-2">📍 Lokasi</h2>
             <p>Dapur Pusat — Sektor 12, DKI Jakarta</p>
             <p className="mt-3"><strong>Jam Operasional:</strong> Senin — Sabtu, 07.00 – 19.00 WIB</p>
           </div>
@@ -396,11 +397,11 @@ function PrivacyPage() {
             <strong className="text-[var(--text-black)]">Near Bakery & Co.</strong> menghormati privasi Anda. 
             Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadi Anda.
           </p>
-          <h3 className="font-bold text-[var(--text-black)] mt-4">📋 Data yang Kami Kumpulkan</h3>
+          <h2 className="font-bold text-[var(--text-black)] mt-4">📋 Data yang Kami Kumpulkan</h2>
           <p>Kami hanya mengumpulkan data yang Anda berikan secara sukarela: nama, alamat email, nomor telepon, dan alamat pengiriman untuk memproses pesanan Anda.</p>
-          <h3 className="font-bold text-[var(--text-black)] mt-4">🔒 Keamanan Data</h3>
+          <h2 className="font-bold text-[var(--text-black)] mt-4">🔒 Keamanan Data</h2>
           <p>Semua data transaksi disimpan di Firebase dengan enkripsi standar industri. Kami tidak membagikan data pribadi Anda kepada pihak ketiga tanpa izin Anda.</p>
-          <h3 className="font-bold text-[var(--text-black)] mt-4">🍪 Cookie</h3>
+          <h2 className="font-bold text-[var(--text-black)] mt-4">🍪 Cookie</h2>
           <p>Kami menggunakan cookie untuk pengalaman berbelanja yang lebih baik — termasuk menyimpan keranjang belanja dan preferensi Anda.</p>
           <p className="mt-6 text-[1.1rem]">Pertanyaan tentang privasi? Hubungi kami di <strong className="text-[var(--brand-green)]">hello@nearbakery.com</strong></p>
         </div>
