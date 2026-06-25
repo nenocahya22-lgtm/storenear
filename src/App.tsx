@@ -244,7 +244,7 @@ function AppContent() {
 
       {/* Bottom responsive layout navigation bar for mobile hp screens */}
       <footer className="md:hidden sticky bottom-0 z-30 w-full bg-white border-t border-gray-150 shadow-2xl py-1 px-4 flex justify-around items-center">
-        <button 
+        <button aria-label="Beranda"
           onClick={() => {
             setUserRole('pembeli');
             setView('home');
@@ -257,7 +257,7 @@ function AppContent() {
           <span className="text-[9px] tracking-tight">Beranda</span>
         </button>
 
-        <button 
+        <button aria-label="Pesanan saya"
           onClick={() => {
             if (!currentUser) {
               triggerToast('Kunci', 'Masuk akun dahulu untuk melacak pesanan.');
@@ -273,7 +273,7 @@ function AppContent() {
           <span className="text-[9px] tracking-tight">Pesanan saya</span>
         </button>
 
-        <button 
+        <button aria-label="Chat dengan penjual"
           onClick={() => {
             if (!currentUser) {
               triggerToast('Akses Kunci', 'Masuk akun dahulu untuk berkirim pesan dengan Penjual.');
