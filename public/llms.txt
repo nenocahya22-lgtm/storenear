@@ -1,0 +1,28 @@
+# Near Bakery & Co. — Web Store
+> Artisan Bakery Premium — Roti sourdough, croissant, pastry & kue segar panggang setiap hari.
+
+## Store Info
+- Name: Near Bakery & Co.
+- URL: https://storebakery.web.app
+- Type: Artisan Bakery E-Commerce
+- Language: id (Indonesian)
+- Location: Indonesia
+
+## Features
+- Online ordering with pre-order (made-to-order) system
+- Payment: Bank Transfer (BCA), E-Wallet (GoPay/OVO), COD
+- Live chat with admin
+- Multi-branch support
+- Made-to-order fresh daily production
+
+## Product Categories
+- Roti & Sourdough
+- Viennoiserie & Croissant
+- Kue & Tart
+- Kue Kering & Cookies
+- Minuman Kopi & Teh
+
+## Contact
+- Email: hello@nearbakery.com
+- Instagram: @nearbakery
+- WhatsApp: https://wa.me/6281234567890
